@@ -46,7 +46,7 @@ describe('tokenize', () => {
     ])
   })
 
-  it('leaves function support validation to the parser', () => {
+  it('leaves function support validation to the evaluator', () => {
     expect(tokenize('mystery')).toEqual([
       {
         end: 7,
@@ -67,12 +67,18 @@ describe('tokenize', () => {
   })
 
   it('tokenizes every supported operator and delimiter', () => {
-    expect(tokenize('+ - * / ^ ( ) , :').map(({ lexeme, type }) => ({ lexeme, type }))).toEqual([
-      { lexeme: '+', type: 'operator' },
-      { lexeme: '-', type: 'operator' },
-      { lexeme: '*', type: 'operator' },
-      { lexeme: '/', type: 'operator' },
-      { lexeme: '^', type: 'operator' },
+    expect(
+      tokenize('+ - * / ^ ( ) , :').map((token) =>
+        token.type === 'operator'
+          ? { lexeme: token.lexeme, operator: token.operator, type: token.type }
+          : { lexeme: token.lexeme, type: token.type }
+      )
+    ).toEqual([
+      { lexeme: '+', operator: '+', type: 'operator' },
+      { lexeme: '-', operator: '-', type: 'operator' },
+      { lexeme: '*', operator: '*', type: 'operator' },
+      { lexeme: '/', operator: '/', type: 'operator' },
+      { lexeme: '^', operator: '^', type: 'operator' },
       { lexeme: '(', type: 'leftParen' },
       { lexeme: ')', type: 'rightParen' },
       { lexeme: ',', type: 'comma' },
@@ -164,7 +170,7 @@ describe('tokenize', () => {
   it.each([
     ['=A1', 0],
     ['$A$1', 0]
-  ])('rejects syntax owned by another layer in %s', (expression, position) => {
+  ])('rejects characters outside the tokenizer grammar in %s', (expression, position) => {
     expect(() => tokenize(expression)).toThrow(
       expect.objectContaining<Partial<TokenizerError>>({
         name: 'TokenizerError',

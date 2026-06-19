@@ -30,6 +30,7 @@ export default defineConfig([
           varsIgnorePattern: '^_'
         }
       ],
+      '@typescript-eslint/no-non-null-assertion': 'error',
       'multiline-comment-style': ['error', 'starred-block'],
       'perfectionist/sort-interfaces': ['error', { order: 'asc', type: 'alphabetical' }],
       'perfectionist/sort-jsx-props': ['error', { order: 'asc', type: 'alphabetical' }],

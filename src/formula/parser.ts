@@ -110,7 +110,10 @@ class Parser {
         return expression
       }
       default:
-        throw new ParserError(`Expected expression, found ${token.lexeme || 'end of input'}`, token.start)
+        throw new ParserError(
+          `Expected expression, found ${token.lexeme || 'end of input'}`,
+          token.start
+        )
     }
   }
 

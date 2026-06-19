@@ -23,7 +23,15 @@ describe('parse', () => {
 
   it('uses parentheses to group expressions', () => {
     expect(
-      parseTokens(leftParen, number(1), operator('+'), number(2), rightParen, operator('*'), number(3))
+      parseTokens(
+        leftParen,
+        number(1),
+        operator('+'),
+        number(2),
+        rightParen,
+        operator('*'),
+        number(3)
+      )
     ).toEqual({
       left: {
         left: { type: 'numberLiteral', value: 1 },
@@ -245,7 +253,11 @@ describe('parse', () => {
     ['non-cell range end', [cell('A1'), colon, number(2)], 3],
     ['chained range', [cell('A1'), colon, cell('B2'), colon, cell('C3')], 5],
     ['unmatched right parenthesis', [number(1), rightParen], 1],
-    ['value after function call', [identifier('SUM'), leftParen, number(1), rightParen, number(2)], 6]
+    [
+      'value after function call',
+      [identifier('SUM'), leftParen, number(1), rightParen, number(2)],
+      6
+    ]
   ])('rejects %s at the expected position', (_name, tokens, position) => {
     expect(() => parseTokens(...tokens)).toThrow(
       expect.objectContaining<Partial<ParserError>>({

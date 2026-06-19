@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { tokenize } from './tokenizer'
-import { TokenizerError } from './tokenizer.types'
+import { tokenize } from '#/formula/tokenizer'
+import { TokenizerError } from '#/formula/tokenizer.types'
 
 describe('tokenize', () => {
   it('returns only EOF for empty or whitespace-only input', () => {
@@ -145,6 +145,20 @@ describe('tokenize', () => {
 
   it('rejects malformed numbers', () => {
     expect(() => tokenize('1.2.3')).toThrow(TokenizerError)
+  })
+
+  it.each([
+    ['.', 0],
+    ['1..2', 2],
+    ['A1B2', 2],
+    ['12A1', 2]
+  ])('rejects malformed lexical boundaries in %s', (expression, position) => {
+    expect(() => tokenize(expression)).toThrow(
+      expect.objectContaining<Partial<TokenizerError>>({
+        name: 'TokenizerError',
+        position
+      })
+    )
   })
 
   it.each([

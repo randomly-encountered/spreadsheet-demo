@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { parse } from '#/formula/parser'
 import {
   cell,
   colon,
@@ -235,7 +236,8 @@ describe('parse', () => {
   it.each<[string, TokenFixture[], number]>([
     ['empty input', [], 0],
     ['adjacent values', [number(1), number(2)], 1],
-    ['bare identifier', [identifier('SUM')], 0],
+    ['bare identifier', [identifier('SUM')], 3],
+    ['operator after identifier', [identifier('SUM'), operator('+'), number(1)], 3],
     ['unclosed group', [leftParen, number(1), operator('+'), number(2)], 4],
     ['missing right operand', [number(1), operator('+')], 2],
     ['trailing comma', [identifier('SUM'), leftParen, number(1), comma, rightParen], 6],
@@ -251,5 +253,15 @@ describe('parse', () => {
         position
       })
     )
+  })
+
+  it('rejects tokens after the end-of-input marker', () => {
+    expect(() =>
+      parse([
+        { end: 1, lexeme: '1', start: 0, type: 'number', value: 1 },
+        { end: 1, lexeme: '', start: 1, type: 'eof' },
+        { end: 2, lexeme: '2', start: 1, type: 'number', value: 2 }
+      ])
+    ).toThrow(expect.objectContaining<Partial<ParserError>>({ position: 1 }))
   })
 })

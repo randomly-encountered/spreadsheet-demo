@@ -21,5 +21,4 @@ export type FormulaFunctionDefinition = {
   readonly evaluate: (values: readonly number[]) => number
   readonly maximumArguments: number | null
   readonly minimumArguments: number
-  readonly name: FormulaFunctionName
 }

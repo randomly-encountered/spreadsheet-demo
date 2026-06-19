@@ -1,24 +1,15 @@
 import { describe, expect, it } from 'vitest'
 
-import { getFormulaFunction, listFormulaFunctions } from '#/formula/functions'
+import { getFormulaFunction } from '#/formula/functions'
 import {
   evaluateFunction,
+  evaluateFunctionValues,
   requireFormulaFunction,
   toMixedCase
 } from '#/formula/functions.test-helpers'
 import { FORMULA_FUNCTION_NAMES } from '#/formula/functions.types'
 
 describe('function registry', () => {
-  it('registers each supported function exactly once', () => {
-    const definitions = listFormulaFunctions()
-
-    expect(definitions).toHaveLength(FORMULA_FUNCTION_NAMES.length)
-    expect(definitions.map(({ name }) => name)).toEqual(
-      expect.arrayContaining([...FORMULA_FUNCTION_NAMES])
-    )
-    expect(new Set(definitions.map(({ name }) => name)).size).toBe(definitions.length)
-  })
-
   it('looks up names case-insensitively without accepting altered names', () => {
     FORMULA_FUNCTION_NAMES.forEach((name) => {
       expect(getFormulaFunction(name.toLowerCase())).toBe(requireFormulaFunction(name))
@@ -29,6 +20,8 @@ describe('function registry', () => {
     expect(getFormulaFunction('')).toBeUndefined()
     expect(getFormulaFunction(' SUM ')).toBeUndefined()
     expect(getFormulaFunction('ſUM')).toBeUndefined()
+    expect(getFormulaFunction('constructor')).toBeUndefined()
+    expect(getFormulaFunction('toString')).toBeUndefined()
   })
 
   it.each([
@@ -51,8 +44,7 @@ describe('function registry', () => {
       expect(requireFormulaFunction(name)).toMatchObject({
         acceptsRanges,
         maximumArguments,
-        minimumArguments,
-        name
+        minimumArguments
       })
     }
   )
@@ -83,6 +75,13 @@ describe('aggregate functions', () => {
   it('does not use zero as a minimum or maximum sentinel', () => {
     expect(evaluateFunction('MIN', 2, 3)).toBe(2)
     expect(evaluateFunction('MAX', -3, -2)).toBe(-2)
+  })
+
+  it('evaluates large ranges without spreading them onto the call stack', () => {
+    const values = Array.from({ length: 200_000 }, (_, index) => index - 100_000)
+
+    expect(evaluateFunctionValues('MIN', values)).toBe(-100_000)
+    expect(evaluateFunctionValues('MAX', values)).toBe(99_999)
   })
 
   it.each([
@@ -144,7 +143,8 @@ describe('scalar functions', () => {
     ['MOD', [-7, 3], 2],
     ['MOD', [7, -3], -2],
     ['MOD', [-7, -3], -1],
-    ['MOD', [6, 3], 0]
+    ['MOD', [6, 3], 0],
+    ['MOD', [6, -3], 0]
   ] as const)('%s evaluates %j', (name, values, expected) => {
     expect(evaluateFunction(name, ...values)).toBe(expected)
   })

@@ -5,7 +5,13 @@ import type { FormulaFunctionDefinition, FormulaFunctionName } from '#/formula/f
  * Evaluates a known function directly so registry tests stay independent of the future evaluator.
  */
 export const evaluateFunction = (name: FormulaFunctionName, ...values: number[]): number =>
-  requireFormulaFunction(name).evaluate(values)
+  evaluateFunctionValues(name, values)
+
+/** Passes an existing value collection without spreading large ranges onto the call stack. */
+export const evaluateFunctionValues = (
+  name: FormulaFunctionName,
+  values: readonly number[]
+): number => requireFormulaFunction(name).evaluate(values)
 
 /**
  * Retrieves a registry entry or stops the current test with a focused failure.

@@ -1,0 +1,8 @@
+# OS level ignores
+.DS_store
+
+# directories to ignore
+node_modules
+build
+dist
+.pnpm-store

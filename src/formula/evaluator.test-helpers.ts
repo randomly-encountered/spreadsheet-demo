@@ -2,7 +2,7 @@ import { expect } from 'vitest'
 
 import type { Expression } from '#/formula/ast.types'
 import { evaluate, EvaluationError } from '#/formula/evaluator'
-import type { CellValueLookup, EvaluationErrorCode } from '#/formula/evaluator.types'
+import type { CellValueLookup, EvaluationErrorType } from '#/formula/evaluator.types'
 import { parse } from '#/formula/parser'
 import { tokenize } from '#/formula/tokenizer'
 
@@ -10,12 +10,12 @@ export const parseFormula = (source: string): Expression => parse(tokenize(sourc
 
 export const createCellValueLookup =
   (values: Readonly<Record<string, number>>): CellValueLookup =>
-  (reference) =>
-    values[reference]
+  (cellId) =>
+    values[cellId]
 
 export const expectFormulaEvaluationError = (
   source: string,
-  code: EvaluationErrorCode,
+  type: EvaluationErrorType,
   lookup: CellValueLookup
 ): void => {
   try {
@@ -23,6 +23,6 @@ export const expectFormulaEvaluationError = (
     throw new Error('Expected evaluation to fail')
   } catch (error) {
     expect(error).toBeInstanceOf(EvaluationError)
-    expect((error as EvaluationError).code).toBe(code)
+    expect((error as EvaluationError).type).toBe(type)
   }
 }

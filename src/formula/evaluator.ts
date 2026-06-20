@@ -1,10 +1,10 @@
 import type { Expression } from '#/formula/ast.types'
 import { EvaluationError } from '#/formula/evaluator.error'
 import {
-  ensureFinite,
+  isFiniteResult,
+  getNormalizedCellId,
   iterateRange,
-  parseCellReference,
-  readCell
+  readReferencedCellValue
 } from '#/formula/evaluator.helpers'
 import type { CellValueLookup } from '#/formula/evaluator.types'
 import { getFormulaFunction } from '#/formula/functions'
@@ -16,7 +16,7 @@ const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number
     case 'numberLiteral':
       return expression.value
     case 'cellReference':
-      return readCell(expression.reference, lookup)
+      return readReferencedCellValue(expression.reference, lookup)
     case 'rangeReference':
       throw new EvaluationError('range-not-allowed', 'A range must be a function argument')
     case 'unaryExpression': {
@@ -29,18 +29,18 @@ const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number
 
       switch (expression.operator) {
         case '+':
-          return ensureFinite(left + right)
+          return isFiniteResult(left + right)
         case '-':
-          return ensureFinite(left - right)
+          return isFiniteResult(left - right)
         case '*':
-          return ensureFinite(left * right)
+          return isFiniteResult(left * right)
         case '/':
           if (right === 0) {
             throw new EvaluationError('division-by-zero', 'Cannot divide by zero')
           }
-          return ensureFinite(left / right)
+          return isFiniteResult(left / right)
         case '^':
-          return ensureFinite(left ** right)
+          return isFiniteResult(left ** right)
         default:
           throw new EvaluationError('calculation', 'Unsupported binary operator')
       }
@@ -79,32 +79,34 @@ const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number
         }
 
         for (const reference of iterateRange(argument)) {
-          values.push(readCell(reference, lookup))
+          values.push(readReferencedCellValue(reference, lookup))
         }
       }
 
-      return ensureFinite(definition.evaluate(values))
+      return isFiniteResult(definition.evaluate(values))
     }
   }
 }
 
 /** Evaluates a parsed formula using numeric values supplied by the spreadsheet layer. */
 export const evaluate = (expression: Expression, lookup: CellValueLookup): number =>
-  ensureFinite(evaluateScalar(expression, lookup))
+  isFiniteResult(evaluateScalar(expression, lookup))
 
 /** Returns normalized cell references, expanding ranges and removing duplicates. */
-export const collectReferences = (expression: Expression): Set<string> => {
-  const references = new Set<string>()
+export const collectReferencedCellIds = (expression: Expression): Set<string> => {
+  const referencedCellIds = new Set<string>()
 
   const visit = (node: Expression): void => {
     switch (node.type) {
       case 'numberLiteral':
         return
       case 'cellReference':
-        references.add(parseCellReference(node.reference).reference)
+        referencedCellIds.add(getNormalizedCellId(node.reference))
         return
       case 'rangeReference':
-        for (const reference of iterateRange(node)) references.add(reference)
+        for (const referencedCellId of iterateRange(node)) {
+          referencedCellIds.add(referencedCellId)
+        }
         return
       case 'unaryExpression':
         visit(node.operand)
@@ -119,5 +121,5 @@ export const collectReferences = (expression: Expression): Set<string> => {
   }
 
   visit(expression)
-  return references
+  return referencedCellIds
 }

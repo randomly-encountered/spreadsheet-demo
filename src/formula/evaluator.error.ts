@@ -1,11 +1,11 @@
-import type { EvaluationErrorCode } from '#/formula/evaluator.types'
+import type { EvaluationErrorType } from '#/formula/evaluator.types'
 
 export class EvaluationError extends Error {
-  readonly code: EvaluationErrorCode
+  readonly type: EvaluationErrorType
 
-  constructor(code: EvaluationErrorCode, message: string) {
+  constructor(type: EvaluationErrorType, message: string) {
     super(message)
-    this.code = code
+    this.type = type
     this.name = 'EvaluationError'
   }
 }

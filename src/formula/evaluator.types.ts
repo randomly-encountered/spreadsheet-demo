@@ -1,4 +1,4 @@
-export type EvaluationErrorCode =
+export type EvaluationErrorType =
   | 'argument-count'
   | 'calculation'
   | 'division-by-zero'
@@ -7,4 +7,4 @@ export type EvaluationErrorCode =
   | 'reference'
   | 'unsupported-function'
 
-export type CellValueLookup = (reference: string) => number | undefined
+export type CellValueLookup = (cellId: string) => number | undefined

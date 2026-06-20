@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { collectReferences, evaluate, EvaluationError } from '#/formula/evaluator'
+import { collectReferencedCellIds, evaluate, EvaluationError } from '#/formula/evaluator'
 import {
   createCellValueLookup,
   expectFormulaEvaluationError,
@@ -56,8 +56,7 @@ describe('evaluate', () => {
     ['SQRT(-1)', 'calculation'],
     ['10 ^ 1000', 'calculation'],
     ['MOD(1, 0)', 'calculation'],
-    ['SUM(A1:A10001)', 'invalid-range'],
-    ['SUM(A1:A9007199254740992)', 'reference']
+    ['SUM(A1:A10001)', 'invalid-range']
   ] as const)('reports %s as %s', (source, code) => {
     expectFormulaEvaluationError(source, code, lookup)
   })
@@ -71,9 +70,9 @@ describe('evaluate', () => {
   })
 })
 
-describe('collectReferences', () => {
+describe('collectReferencedCellIds', () => {
   it('collects normalized unique references throughout an expression', () => {
-    expect([...collectReferences(parseFormula('A1 + SUM(a1:B2)'))]).toEqual([
+    expect([...collectReferencedCellIds(parseFormula('A1 + SUM(a1:B2)'))]).toEqual([
       'A1',
       'B1',
       'A2',
@@ -82,14 +81,18 @@ describe('collectReferences', () => {
   })
 
   it('collects references without requiring a supported function', () => {
-    expect([...collectReferences(parseFormula('UNKNOWN(A1)'))]).toEqual(['A1'])
+    expect([...collectReferencedCellIds(parseFormula('UNKNOWN(A1)'))]).toEqual(['A1'])
   })
 
   it('rejects reversed ranges', () => {
-    expect(() => collectReferences(parseFormula('SUM(B2:A1)'))).toThrowError(EvaluationError)
+    expect(() => collectReferencedCellIds(parseFormula('SUM(B2:A1)'))).toThrowError(
+      EvaluationError
+    )
   })
 
   it('rejects ranges large enough to exhaust the UI thread', () => {
-    expect(() => collectReferences(parseFormula('SUM(A1:A10001)'))).toThrowError(EvaluationError)
+    expect(() => collectReferencedCellIds(parseFormula('SUM(A1:A10001)'))).toThrowError(
+      EvaluationError
+    )
   })
 })

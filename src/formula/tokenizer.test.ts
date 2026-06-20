@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { tokenize } from '#/formula/tokenizer'
-import { TokenizerError } from '#/formula/tokenizer.types'
+import { TokenizerError } from '#/formula/tokenizer.error'
 
 describe('tokenize', () => {
   it('returns only EOF for empty or whitespace-only input', () => {

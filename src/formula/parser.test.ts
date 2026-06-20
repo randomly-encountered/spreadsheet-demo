@@ -13,7 +13,7 @@ import {
   rightParen,
   type TokenFixture
 } from '#/formula/parser.test-helpers'
-import { ParserError } from '#/formula/parser.types'
+import { ParserError } from '#/formula/parser.error'
 
 describe('parse', () => {
   it('parses number and cell token payloads', () => {

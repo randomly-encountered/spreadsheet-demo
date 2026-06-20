@@ -1,5 +1,5 @@
 import type { Expression } from '#/formula/ast.types'
-import { ParserError } from '#/formula/parser.types'
+import { ParserError } from '#/formula/parser.error'
 import type { Operator, Token } from '#/formula/tokenizer.types'
 
 type UnaryOperator = Extract<Operator, '+' | '-'>

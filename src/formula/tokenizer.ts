@@ -1,4 +1,5 @@
-import { TokenizerError, type Token } from '#/formula/tokenizer.types'
+import { TokenizerError } from '#/formula/tokenizer.error'
+import type { Token } from '#/formula/tokenizer.types'
 
 /**
  * Checks the contiguous ASCII digit range used by formula syntax and reports

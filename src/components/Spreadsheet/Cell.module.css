@@ -1,0 +1,24 @@
+.cell {
+  align-items: center;
+  background: var(--color-cell);
+  block-size: var(--cell-block-size);
+  color: var(--color-text);
+  cursor: cell;
+  display: flex;
+  font-variant-numeric: tabular-nums;
+  justify-content: flex-end;
+  min-inline-size: 0;
+  outline: 0;
+  overflow: hidden;
+  padding-inline: var(--cell-padding-inline);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cell[aria-selected='true'] {
+  background: var(--color-cell-selected);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 var(--focus-ring-width) var(--color-focus);
+  position: relative;
+  z-index: 1;
+}

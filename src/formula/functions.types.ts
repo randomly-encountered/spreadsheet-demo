@@ -17,8 +17,8 @@ export const FORMULA_FUNCTION_NAMES = [
 export type FormulaFunctionName = (typeof FORMULA_FUNCTION_NAMES)[number]
 
 export type FormulaFunctionDefinition = {
-  readonly acceptsRanges: boolean
   readonly evaluate: (values: readonly number[]) => number
+  readonly acceptsRanges: boolean
   readonly maximumArguments: number | null
   readonly minimumArguments: number
 }

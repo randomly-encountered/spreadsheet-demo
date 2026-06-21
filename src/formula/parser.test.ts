@@ -47,14 +47,14 @@ describe('parse', () => {
 
   it('parses multiplication before addition', () => {
     expect(parseTokens(number(1), operator('+'), number(2), operator('*'), number(3))).toEqual({
-      left: { type: 'numberLiteral', value: 1 },
-      operator: '+',
       right: {
         left: { type: 'numberLiteral', value: 2 },
         operator: '*',
         right: { type: 'numberLiteral', value: 3 },
         type: 'binaryExpression'
       },
+      left: { type: 'numberLiteral', value: 1 },
+      operator: '+',
       type: 'binaryExpression'
     })
   })
@@ -87,14 +87,14 @@ describe('parse', () => {
 
   it('parses exponentiation right-associatively', () => {
     expect(parseTokens(number(2), operator('^'), number(3), operator('^'), number(2))).toEqual({
-      left: { type: 'numberLiteral', value: 2 },
-      operator: '^',
       right: {
         left: { type: 'numberLiteral', value: 3 },
         operator: '^',
         right: { type: 'numberLiteral', value: 2 },
         type: 'binaryExpression'
       },
+      left: { type: 'numberLiteral', value: 2 },
+      operator: '^',
       type: 'binaryExpression'
     })
   })
@@ -112,13 +112,13 @@ describe('parse', () => {
     })
 
     expect(parseTokens(number(2), operator('^'), operator('-'), number(3))).toEqual({
-      left: { type: 'numberLiteral', value: 2 },
-      operator: '^',
       right: {
         operand: { type: 'numberLiteral', value: 3 },
         operator: '-',
         type: 'unaryExpression'
       },
+      left: { type: 'numberLiteral', value: 2 },
+      operator: '^',
       type: 'binaryExpression'
     })
   })
@@ -148,13 +148,13 @@ describe('parse', () => {
     })
 
     expect(parseTokens(number(1), operator('+'), operator('-'), number(2))).toEqual({
-      left: { type: 'numberLiteral', value: 1 },
-      operator: '+',
       right: {
         operand: { type: 'numberLiteral', value: 2 },
         operator: '-',
         type: 'unaryExpression'
       },
+      left: { type: 'numberLiteral', value: 1 },
+      operator: '+',
       type: 'binaryExpression'
     })
   })

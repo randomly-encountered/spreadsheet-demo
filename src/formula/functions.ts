@@ -44,8 +44,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'ABS',
     {
-      acceptsRanges: false,
       evaluate: ([value = Number.NaN]) => Math.abs(value),
+      acceptsRanges: false,
       maximumArguments: 1,
       minimumArguments: 1
     }
@@ -53,8 +53,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'AVERAGE',
     {
-      acceptsRanges: true,
       evaluate: (values) => sum(values) / values.length,
+      acceptsRanges: true,
       maximumArguments: null,
       minimumArguments: 1
     }
@@ -62,8 +62,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'CEILING',
     {
-      acceptsRanges: false,
       evaluate: ([value = Number.NaN]) => Math.ceil(value),
+      acceptsRanges: false,
       maximumArguments: 1,
       minimumArguments: 1
     }
@@ -71,8 +71,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'COUNT',
     {
-      acceptsRanges: true,
       evaluate: (values) => values.length,
+      acceptsRanges: true,
       maximumArguments: null,
       minimumArguments: 1
     }
@@ -80,8 +80,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'FLOOR',
     {
-      acceptsRanges: false,
       evaluate: ([value = Number.NaN]) => Math.floor(value),
+      acceptsRanges: false,
       maximumArguments: 1,
       minimumArguments: 1
     }
@@ -89,8 +89,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'MAX',
     {
-      acceptsRanges: true,
       evaluate: (values) => values.reduce((maximum, value) => Math.max(maximum, value), -Infinity),
+      acceptsRanges: true,
       maximumArguments: null,
       minimumArguments: 1
     }
@@ -98,8 +98,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'MIN',
     {
-      acceptsRanges: true,
       evaluate: (values) => values.reduce((minimum, value) => Math.min(minimum, value), Infinity),
+      acceptsRanges: true,
       maximumArguments: null,
       minimumArguments: 1
     }
@@ -116,8 +116,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'POWER',
     {
-      acceptsRanges: false,
       evaluate: ([base = Number.NaN, exponent = Number.NaN]) => base ** exponent,
+      acceptsRanges: false,
       maximumArguments: 2,
       minimumArguments: 2
     }
@@ -125,8 +125,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'PRODUCT',
     {
-      acceptsRanges: true,
       evaluate: (values) => values.reduce((product, value) => product * value, 1),
+      acceptsRanges: true,
       maximumArguments: null,
       minimumArguments: 1
     }
@@ -143,8 +143,8 @@ const definitionsByName = new Map<FormulaFunctionName, FormulaFunctionDefinition
   [
     'SQRT',
     {
-      acceptsRanges: false,
       evaluate: ([value = Number.NaN]) => Math.sqrt(value),
+      acceptsRanges: false,
       maximumArguments: 1,
       minimumArguments: 1
     }

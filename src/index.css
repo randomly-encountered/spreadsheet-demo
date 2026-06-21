@@ -1,0 +1,79 @@
+:root {
+  color: #1d2939;
+  background: #f3f5f7;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --color-canvas: #f3f5f7;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f8fafc;
+  --color-header: #f4f6f8;
+  --color-cell: #ffffff;
+  --color-cell-selected: #f0f6ff;
+  --color-text: #344054;
+  --color-text-strong: #101828;
+  --color-text-muted: #667085;
+  --color-border: #dce1e7;
+  --color-border-strong: #c9d0d8;
+  --color-accent: #2563eb;
+  --color-focus: #2563eb;
+
+  --border-width: 1px;
+  --focus-ring-width: 2px;
+  --radius-large: 12px;
+  --grid-gap-size: 1px;
+  --cell-inline-size: 96px;
+  --cell-min-inline-size: 80px;
+  --cell-max-inline-size: 120px;
+  --cell-block-size: 44px;
+  --cell-padding-inline: 12px;
+  --row-header-inline-size: 42px;
+  --column-header-block-size: 34px;
+  --coordinate-inline-size: 72px;
+  --control-block-size: 46px;
+  --spreadsheet-min-inline-size: calc(
+    var(--row-header-inline-size) + (10 * var(--cell-min-inline-size)) +
+      (10 * var(--grid-gap-size)) + (2 * var(--grid-gap-size))
+  );
+  --spreadsheet-max-inline-size: calc(
+    var(--row-header-inline-size) + (10 * var(--cell-max-inline-size)) +
+      (10 * var(--grid-gap-size)) + (2 * var(--grid-gap-size))
+  );
+  --workspace-max-inline-size: var(--spreadsheet-max-inline-size);
+
+  --space-compact: 4px;
+  --space-small: 10px;
+  --space-medium: 18px;
+  --space-large: 28px;
+  --space-page: clamp(16px, 4vw, 48px);
+  --font-size-small: 0.75rem;
+  --font-size-title: clamp(1.5rem, 3vw, 2.125rem);
+  --shadow-workspace: 0 18px 50px rgb(16 24 40 / 10%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-canvas);
+}
+
+body {
+  margin: 0;
+  min-inline-size: 320px;
+  min-block-size: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}

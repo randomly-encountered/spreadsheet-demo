@@ -17,8 +17,8 @@ export type DependencyGraph = {
 }
 
 export type SetCellResult = {
-  accepted: boolean
   error?: CellError | EvaluationError
+  accepted: boolean
 }
 
 export type SpreadsheetEngine = {

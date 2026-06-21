@@ -109,11 +109,11 @@ export function createSpreadsheetEngine({
       value = evaluate(expression, lookupNumericCellValue)
     } catch (formulaError) {
       return {
-        accepted: false,
         error:
           formulaError instanceof EvaluationError
             ? formulaError
-            : new CellError('formula', 'Formula syntax is invalid')
+            : new CellError('formula', 'Formula syntax is invalid'),
+        accepted: false
       }
     }
 

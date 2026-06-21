@@ -9,22 +9,18 @@ import {
 } from '#/components/Spreadsheet/constants'
 import { getNextCellIndex } from '#/components/Spreadsheet/Grid.helpers'
 import styles from '#/components/Spreadsheet/Grid.module.css'
-import type { SpreadsheetEngine } from '#/spreadsheet/types'
+import { useSpreadsheetStore } from '#/components/Spreadsheet/Spreadsheet.context'
 
-type GridProps = {
-  engine: SpreadsheetEngine
-  selectedCellId: string
-  onSelectCell: (cellId: string) => void
-}
+function Grid() {
+  const selectCell = useSpreadsheetStore((state) => state.selectCell)
 
-function Grid({ engine, selectedCellId, onSelectCell }: GridProps) {
   function handleCellKeyDown(event: KeyboardEvent<HTMLDivElement>, index: number): void {
     const nextIndex = getNextCellIndex(index, event.key)
 
     if (nextIndex === null) return
 
     event.preventDefault()
-    onSelectCell(getCellId(nextIndex))
+    selectCell(getCellId(nextIndex))
   }
 
   return (
@@ -53,17 +49,11 @@ function Grid({ engine, selectedCellId, onSelectCell }: GridProps) {
             {COLUMN_LABELS.map((column, columnIndex) => {
               const index = row * COLUMN_COUNT + columnIndex
               const cellId = `${column}${row + 1}`
-              const value = engine.getCell(cellId).value ?? ''
-              console.log(value)
-
               return (
                 <Cell
                   cellId={cellId}
-                  isSelected={selectedCellId === cellId}
                   key={cellId}
-                  value={value}
                   onKeyDown={(event) => handleCellKeyDown(event, index)}
-                  onSelect={() => onSelectCell(cellId)}
                 />
               )
             })}

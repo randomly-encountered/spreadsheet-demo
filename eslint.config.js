@@ -67,10 +67,7 @@ const objectTypeGroups = [
   ),
   'handler'
 ]
-const objectGroups = [
-  ...generatePredefinedGroups(['member', 'method', 'property'], ['multiline']),
-  'handler'
-]
+const objectGroups = ['member', 'method', 'property', 'handler']
 
 export default defineConfig([
   globalIgnores(['dist']),

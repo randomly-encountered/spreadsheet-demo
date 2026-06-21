@@ -2,17 +2,18 @@ import { useEffect, useRef } from 'react'
 import type { KeyboardEventHandler } from 'react'
 
 import styles from '#/components/Spreadsheet/Cell.module.css'
+import { useSpreadsheetStore } from '#/components/Spreadsheet/Spreadsheet.context'
 
 type CellProps = {
   cellId: string
-  isSelected: boolean
-  value: number | string
   onKeyDown: KeyboardEventHandler<HTMLDivElement>
-  onSelect: () => void
 }
 
-function Cell({ cellId, isSelected, value, onKeyDown, onSelect }: CellProps) {
+function Cell({ cellId, onKeyDown }: CellProps) {
   const cellRef = useRef<HTMLDivElement>(null)
+  const isSelected = useSpreadsheetStore((state) => state.selectedCellId === cellId)
+  const selectCell = useSpreadsheetStore((state) => state.selectCell)
+  const value = useSpreadsheetStore((state) => state.cells.get(cellId)?.value ?? '')
 
   useEffect(() => {
     if (!isSelected) return
@@ -28,7 +29,7 @@ function Cell({ cellId, isSelected, value, onKeyDown, onSelect }: CellProps) {
       ref={cellRef}
       role="gridcell"
       tabIndex={isSelected ? 0 : -1}
-      onFocus={isSelected ? undefined : onSelect}
+      onFocus={isSelected ? undefined : () => selectCell(cellId)}
       onKeyDown={onKeyDown}
     >
       {value}

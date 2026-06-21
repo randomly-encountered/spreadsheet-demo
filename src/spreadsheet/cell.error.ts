@@ -1,4 +1,4 @@
-export type CellErrorType = 'calculation' | 'cycle' | 'formula' | 'reference'
+export type CellErrorType = 'cycle' | 'formula' | 'reference'
 
 export class CellError extends Error {
   readonly type: CellErrorType

@@ -12,6 +12,59 @@ export function createDependencyGraph(): DependencyGraph {
     return dependents.get(cellId) ?? new Set()
   }
 
+  function collectTransitiveDependents(cellId: CellId): Set<CellId> {
+    const transitiveDependents = new Set<CellId>()
+    const pendingCellIds = [...getDependentsFor(cellId)]
+
+    while (pendingCellIds.length > 0) {
+      const dependentCellId = pendingCellIds.pop()
+      if (dependentCellId === undefined || transitiveDependents.has(dependentCellId)) continue
+
+      transitiveDependents.add(dependentCellId)
+      pendingCellIds.push(...getDependentsFor(dependentCellId))
+    }
+
+    return transitiveDependents
+  }
+
+  function sortInEvaluationOrder(cellIds: ReadonlySet<CellId>): CellId[] {
+    const unresolvedDependencyCounts = new Map<CellId, number>()
+    const readyCellIds: CellId[] = []
+
+    for (const cellId of cellIds) {
+      const unresolvedDependencyCount = [...getDependenciesFor(cellId)].filter(
+        (dependencyCellId) => cellIds.has(dependencyCellId)
+      ).length
+
+      unresolvedDependencyCounts.set(cellId, unresolvedDependencyCount)
+      if (unresolvedDependencyCount === 0) readyCellIds.push(cellId)
+    }
+
+    const orderedCellIds: CellId[] = []
+
+    while (readyCellIds.length > 0) {
+      const readyCellId = readyCellIds.pop()
+      if (readyCellId === undefined) continue
+
+      orderedCellIds.push(readyCellId)
+
+      for (const dependentCellId of getDependentsFor(readyCellId)) {
+        if (!cellIds.has(dependentCellId)) continue
+
+        const unresolvedDependencyCount =
+          (unresolvedDependencyCounts.get(dependentCellId) ?? 0) - 1
+        unresolvedDependencyCounts.set(dependentCellId, unresolvedDependencyCount)
+        if (unresolvedDependencyCount === 0) readyCellIds.push(dependentCellId)
+      }
+    }
+
+    return orderedCellIds
+  }
+
+  function getDependentsInEvaluationOrder(cellId: CellId): CellId[] {
+    return sortInEvaluationOrder(collectTransitiveDependents(cellId))
+  }
+
   // A cycle exists if the proposed dependencies eventually lead back to this cell.
   function hasCyclicDependenciesFor(
     cellId: CellId,
@@ -77,5 +130,10 @@ export function createDependencyGraph(): DependencyGraph {
     return true
   }
 
-  return { getDependenciesFor, getDependentsFor, setDependenciesFor }
+  return {
+    getDependenciesFor,
+    getDependentsFor,
+    getDependentsInEvaluationOrder,
+    setDependenciesFor
+  }
 }

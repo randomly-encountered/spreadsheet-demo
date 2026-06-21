@@ -79,6 +79,22 @@ describe('DependencyGraph', () => {
     expect(getDependenciesFor('E1')).toEqual(new Set(['B1', 'D1']))
   })
 
+  it('returns transitive dependents after their affected dependencies', () => {
+    const graph = createDependencyGraph()
+    graph.setDependenciesFor('B1', new Set(['A1']))
+    graph.setDependenciesFor('C1', new Set(['A1']))
+    graph.setDependenciesFor('D1', new Set(['B1', 'C1']))
+    graph.setDependenciesFor('E1', new Set(['D1']))
+
+    const orderedDependents = graph.getDependentsInEvaluationOrder('A1')
+
+    expect(orderedDependents).toHaveLength(4)
+    expect(new Set(orderedDependents)).toEqual(new Set(['B1', 'C1', 'D1', 'E1']))
+    expect(orderedDependents.indexOf('B1')).toBeLessThan(orderedDependents.indexOf('D1'))
+    expect(orderedDependents.indexOf('C1')).toBeLessThan(orderedDependents.indexOf('D1'))
+    expect(orderedDependents.indexOf('D1')).toBeLessThan(orderedDependents.indexOf('E1'))
+  })
+
   it('keeps other dependents when one is removed', () => {
     const { getDependenciesFor, getDependentsFor, setDependenciesFor } = createDependencyGraph()
     setDependenciesFor('B1', new Set(['A1']))

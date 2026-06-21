@@ -1,11 +1,10 @@
 import styles from '#/components/Spreadsheet/FormulaBar.module.css'
+import { useSpreadsheetStore } from '#/components/Spreadsheet/Spreadsheet.context'
 
-type FormulaBarProps = {
-  cellId: string
-  rawValue: string
-}
+function FormulaBar() {
+  const cellId = useSpreadsheetStore((state) => state.selectedCellId)
+  const rawValue = useSpreadsheetStore((state) => state.cells.get(cellId)?.raw ?? '')
 
-function FormulaBar({ cellId, rawValue }: FormulaBarProps) {
   return (
     <div aria-label="Selected cell value" className={styles.container}>
       <output aria-label="Selected cell" className={styles.coordinate}>

@@ -13,20 +13,6 @@ export type Cell = {
 export type DependencyGraph = {
   getDependenciesFor: (cellId: CellId) => ReadonlySet<CellId>
   getDependentsFor: (cellId: CellId) => ReadonlySet<CellId>
+  getDependentsInEvaluationOrder: (cellId: CellId) => CellId[]
   setDependenciesFor: (cellId: CellId, dependencies: ReadonlySet<CellId>) => boolean
-}
-
-export type SetCellResult = {
-  error?: CellError | EvaluationError
-  accepted: boolean
-}
-
-export type SpreadsheetEngine = {
-  getCell: (cellId: CellId) => Cell
-  setCell: (cellId: CellId, raw: string) => SetCellResult
-}
-
-export type SpreadsheetEngineOptions = {
-  columns?: number
-  rows?: number
 }

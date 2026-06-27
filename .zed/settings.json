@@ -4,5 +4,30 @@
     {
       "code_action": "source.fixAll.eslint"
     }
-  ]
+  ],
+  "languages": {
+    "YAML": {
+      "format_on_save": "on",
+      "formatter": "language_server",
+      "language_servers": ["yaml-language-server"],
+      "tab_size": 2,
+      "hard_tabs": false
+    }
+  },
+  "lsp": {
+    "yaml-language-server": {
+      "settings": {
+        "yaml": {
+          "completion": true,
+          "format": {
+            "enable": true,
+            "proseWrap": "preserve",
+            "singleQuote": false
+          },
+          "hover": true,
+          "validate": true
+        }
+      }
+    }
+  }
 }

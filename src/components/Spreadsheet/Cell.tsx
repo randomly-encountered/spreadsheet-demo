@@ -1,38 +1,28 @@
-import { useEffect, useRef } from 'react'
-import type { KeyboardEventHandler } from 'react'
-
 import styles from '#/components/Spreadsheet/Cell.module.css'
+import { getCellElementId } from '#/components/Spreadsheet/constants'
 import { useSpreadsheetStore } from '#/components/Spreadsheet/Spreadsheet.context'
 
 type CellProps = {
   cellId: string
-  onKeyDown: KeyboardEventHandler<HTMLDivElement>
 }
 
-function Cell({ cellId, onKeyDown }: CellProps) {
-  const cellRef = useRef<HTMLDivElement>(null)
-  const isSelected = useSpreadsheetStore((state) => state.selectedCellId === cellId)
-  const selectCell = useSpreadsheetStore((state) => state.selectCell)
-  const value = useSpreadsheetStore((state) => state.cells.get(cellId)?.value ?? '')
-
-  useEffect(() => {
-    if (!isSelected) return
-
-    cellRef.current?.focus()
-  }, [isSelected])
+function Cell({ cellId }: CellProps) {
+  const isSelected = useSpreadsheetStore(state => state.selectedCellId === cellId)
+  const cell = useSpreadsheetStore(state => state.cells.get(cellId))
+  const value = cell?.value ?? ''
+  const isDerived = cell?.raw.startsWith('=') ?? false
 
   return (
     <div
       aria-label={`${cellId}${value === '' ? ', empty' : `, ${value}`}`}
       aria-selected={isSelected}
       className={styles.cell}
-      ref={cellRef}
+      data-cell-id={cellId}
+      data-derived={isDerived ? true : undefined}
+      id={getCellElementId(cellId)}
       role="gridcell"
-      tabIndex={isSelected ? 0 : -1}
-      onFocus={isSelected ? undefined : () => selectCell(cellId)}
-      onKeyDown={onKeyDown}
     >
-      {value}
+      <span className={styles.value}>{value}</span>
     </div>
   )
 }

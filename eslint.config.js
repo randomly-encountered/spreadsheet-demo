@@ -71,17 +71,18 @@ const objectGroups = ['member', 'method', 'property', 'handler']
 
 export default defineConfig([
   globalIgnores(['dist']),
+  eslintConfigPrettier,
   {
     files: ['**/*.{ts,tsx}'],
     plugins: {
-      '@stylistic': stylistic,
       perfectionist
     },
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
       reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite
+      reactRefresh.configs.vite,
+      stylistic.configs.recommended
     ],
     rules: {
       '@typescript-eslint/no-unused-vars': [
@@ -135,6 +136,5 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser
     }
-  },
-  eslintConfigPrettier
+  }
 ])

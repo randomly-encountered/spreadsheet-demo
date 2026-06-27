@@ -3,6 +3,6 @@
   border: var(--border-width) solid var(--color-border-strong);
   border-radius: var(--radius-large);
   box-shadow: var(--shadow-workspace);
-  inline-size: clamp(var(--spreadsheet-min-inline-size), 100%, var(--spreadsheet-max-inline-size));
+  inline-size: min(100%, var(--spreadsheet-max-inline-size));
   overflow: hidden;
 }

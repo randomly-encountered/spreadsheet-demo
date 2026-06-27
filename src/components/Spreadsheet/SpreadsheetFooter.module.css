@@ -1,0 +1,18 @@
+.footer {
+  align-items: center;
+  color: var(--color-text-muted);
+  display: flex;
+  font-size: var(--font-size-small);
+  gap: var(--space-compact);
+  justify-content: center;
+  margin-block-start: var(--space-compact);
+}
+
+.keyIcon {
+  display: inline-flex;
+  font-size: 1.25rem;
+}
+
+.arrowKeys {
+  gap: 0.125rem;
+}

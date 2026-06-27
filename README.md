@@ -108,3 +108,9 @@ Formula edits will be validated as transactions. The proposed dependencies are c
 After a valid edit, the reverse dependency index identifies the affected cells. Those cells will be evaluated in dependency order and committed together. Unrelated cells will not be recalculated.
 
 This design keeps formula evaluation, graph maintenance, and React rendering separate. It also bounds the work performed by an edit to the portion of the grid that can actually change.
+
+## Deployment
+
+GitHub Actions deploys the application to GitHub Pages. A push to `main`, or a manual run from the Actions tab, starts the workflow in `.github/workflows/deploy.yml`. The workflow installs the locked dependencies with pnpm, runs the production build, uploads `dist` as a Pages artifact, and publishes that artifact with GitHub's official Pages action.
+
+This keeps generated files out of the repository and avoids maintaining a separate deployment branch. GitHub Pages must use **GitHub Actions** as its source under **Settings → Pages**.

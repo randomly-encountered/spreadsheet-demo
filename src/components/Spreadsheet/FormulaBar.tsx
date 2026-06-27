@@ -6,18 +6,20 @@ import styles from '#/components/Spreadsheet/FormulaBar.module.css'
 import { useSpreadsheetStore } from '#/components/Spreadsheet/Spreadsheet.context'
 
 type FormulaInputProps = {
-  cellId: string
+  cellId: string | null
   inputRef: RefObject<HTMLInputElement | null>
   onEditingComplete: () => void
 }
 
 type PendingCellEdit = {
-  cellId: string
+  cellId: string | null
   value: string
 }
 
 function FormulaInput({ cellId, inputRef, onEditingComplete }: FormulaInputProps) {
-  const rawValue = useSpreadsheetStore(state => state.cells.get(cellId)?.raw ?? '')
+  const rawValue = useSpreadsheetStore(state =>
+    cellId ? (state.cells.get(cellId)?.raw ?? '') : '',
+  )
   const setCell = useSpreadsheetStore(state => state.setCell)
   const [pendingCellEdit, setPendingCellEdit] = useState<PendingCellEdit>({
     cellId,
@@ -32,6 +34,7 @@ function FormulaInput({ cellId, inputRef, onEditingComplete }: FormulaInputProps
    * the UI where validation fails.
    */
   function commitPendingCellEdit(): boolean {
+    if (cellId === null) return false
     if (inputValue === rawValue) return true
 
     try {
@@ -80,8 +83,10 @@ function FormulaInput({ cellId, inputRef, onEditingComplete }: FormulaInputProps
     <div className={styles.inputContainer}>
       <input
         aria-invalid={error ? true : undefined}
-        aria-label={`Raw value for ${cellId}`}
+        aria-label={cellId ? `Raw value for ${cellId}` : 'Select a cell to edit'}
         className={styles.input}
+        disabled={cellId === null}
+        placeholder={cellId ? undefined : 'Select a cell'}
         ref={inputRef}
         title={error ?? undefined}
         value={inputValue}
@@ -89,9 +94,9 @@ function FormulaInput({ cellId, inputRef, onEditingComplete }: FormulaInputProps
         onKeyDown={handleKeyDown}
       />
       <button
-        aria-label={`Clear input for ${cellId}`}
+        aria-label={cellId ? `Clear input for ${cellId}` : 'Clear input'}
         className={styles.clearButton}
-        disabled={inputValue.length === 0}
+        disabled={cellId === null || inputValue.length === 0}
         type="button"
         onClick={handleClear}
       >
@@ -111,7 +116,7 @@ export default function FormulaBar({ inputRef, onEditingComplete }: FormulaBarPr
 
   return (
     <div className={styles.container}>
-      <span className={styles.coordinate}>{cellId}</span>
+      <span className={styles.coordinate}>{cellId ?? ''}</span>
       <span aria-hidden="true" className={styles.symbol}>
         fx
       </span>

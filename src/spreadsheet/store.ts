@@ -25,7 +25,7 @@ export type SpreadsheetState = {
   selectCell: (cellId: CellId) => void
   setCell: (cellId: CellId, raw: string) => void
   cells: ReadonlyMap<CellId, Cell>
-  selectedCellId: CellId
+  selectedCellId: CellId | null
 }
 
 export function createSpreadsheetStore({
@@ -135,7 +135,7 @@ export function createSpreadsheetStore({
       getCell: cellId => get().cells.get(getCellId(cellId, columns, rows)) ?? EMPTY_CELL,
       selectCell: cellId => set({ selectedCellId: getCellId(cellId, columns, rows) }),
       cells: new Map(),
-      selectedCellId: getCellId('A1', columns, rows),
+      selectedCellId: null,
       setCell,
     }
   })

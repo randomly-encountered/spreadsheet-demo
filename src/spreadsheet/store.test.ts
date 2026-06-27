@@ -21,6 +21,7 @@ describe('SpreadsheetStore', () => {
   it('starts with empty cells in the configured grid', () => {
     const spreadsheet = createSpreadsheet()
 
+    expect(spreadsheet.selectedCellId).toBeNull()
     expect(spreadsheet.getCell('A1')).toEqual({ raw: '', value: null })
     expect(spreadsheet.getCell('J10')).toEqual({ raw: '', value: null })
   })

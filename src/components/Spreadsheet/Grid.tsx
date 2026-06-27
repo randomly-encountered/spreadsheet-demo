@@ -23,6 +23,7 @@ function Grid({ gridRef, onEditCell }: GridProps) {
   const selectCell = useSpreadsheetStore(state => state.selectCell)
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    if (selectedCellId === null) return
     if (event.key === 'Enter') {
       event.preventDefault()
       onEditCell()
@@ -47,9 +48,13 @@ function Grid({ gridRef, onEditCell }: GridProps) {
     gridRef.current?.focus()
   }
 
+  function handleFocus(): void {
+    if (selectedCellId === null) selectCell(getCellId(0))
+  }
+
   return (
     <div
-      aria-activedescendant={getCellElementId(selectedCellId)}
+      aria-activedescendant={selectedCellId ? getCellElementId(selectedCellId) : undefined}
       aria-colcount={COLUMN_COUNT + 1}
       aria-label="Spreadsheet"
       aria-rowcount={ROW_COUNT + 1}
@@ -58,6 +63,7 @@ function Grid({ gridRef, onEditCell }: GridProps) {
       role="grid"
       tabIndex={0}
       onClick={handleClick}
+      onFocus={handleFocus}
       onKeyDown={handleKeyDown}
     >
       <div className={styles.grid}>

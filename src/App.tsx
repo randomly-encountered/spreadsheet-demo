@@ -1,7 +1,6 @@
-import { Icon } from '@iconify/react'
-
 import styles from '#/App.module.css'
 import Spreadsheet from '#/components/Spreadsheet'
+import SpreadsheetFooter from '#/components/Spreadsheet/SpreadsheetFooter'
 
 function App() {
   return (
@@ -15,16 +14,7 @@ function App() {
         </header>
         <figure className={styles.spreadsheetFigure}>
           <Spreadsheet />
-          <figcaption className={styles.hint}>
-            Use
-            <span aria-label="arrow keys" className={styles.arrowKeys} role="img">
-              <Icon aria-hidden="true" icon="ph:arrow-square-left-light" />
-              <Icon aria-hidden="true" icon="ph:arrow-square-up-light" />
-              <Icon aria-hidden="true" icon="ph:arrow-square-down-light" />
-              <Icon aria-hidden="true" icon="ph:arrow-square-right-light" />
-            </span>
-            to move between cells.
-          </figcaption>
+          <SpreadsheetFooter />
         </figure>
       </section>
     </main>

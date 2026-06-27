@@ -41,12 +41,12 @@ export type FunctionCall = {
   type: 'functionCall'
 }
 
-export type Expression =
-  | NumberLiteral
-  | CellReference
-  | UnaryExpression
-  | BinaryExpression
-  | RangeReference
-  | FunctionCall
+export type Expression
+  = | NumberLiteral
+    | CellReference
+    | UnaryExpression
+    | BinaryExpression
+    | RangeReference
+    | FunctionCall
 
 export type ExpressionType = Expression['type']

@@ -31,18 +31,19 @@ export type SpreadsheetState = {
 export function createSpreadsheetStore({
   columns = DEFAULT_COLUMN_COUNT,
   initialValues = [],
-  rows = DEFAULT_ROW_COUNT
+  rows = DEFAULT_ROW_COUNT,
 }: SpreadsheetStoreOptions = {}) {
   const dependencyGraph = createDependencyGraph()
   const formulaMap = new Map<CellId, Expression>()
   const store = createStore<SpreadsheetState>()((set, get) => {
     function lookupNumericCellValue(
       cellMap: ReadonlyMap<CellId, Cell>,
-      reference: string
+      reference: string,
     ): number | undefined {
       try {
         return getCellNumericValue(cellMap, getCellId(reference, columns, rows))
-      } catch {
+      }
+      catch {
         return undefined
       }
     }
@@ -58,16 +59,17 @@ export function createSpreadsheetStore({
         try {
           cellMap.set(affectedCellId, {
             raw,
-            value: evaluate(formula, (reference) =>
-              lookupNumericCellValue(cellMap, reference)
+            value: evaluate(formula, reference =>
+              lookupNumericCellValue(cellMap, reference),
             ),
           })
-        } catch (evaluationError) {
+        }
+        catch (evaluationError) {
           assertEvaluationError(evaluationError)
           cellMap.set(affectedCellId, {
             error: evaluationError,
             raw,
-            value: null
+            value: null,
           })
         }
       }
@@ -91,7 +93,7 @@ export function createSpreadsheetStore({
       dependencyGraph.setDependenciesFor(cellId, new Set())
       applyCellUpdate(cellId, {
         raw: rawInput,
-        value: rawInput || null
+        value: rawInput || null,
       })
     }
 
@@ -102,10 +104,11 @@ export function createSpreadsheetStore({
       try {
         // Extract the raw formula string without the canonical prefix
         expression = parse(tokenize(rawInput.slice(FORMULA_PREFIX.length)))
-        value = evaluate(expression, (reference) =>
-          lookupNumericCellValue(get().cells, reference)
+        value = evaluate(expression, reference =>
+          lookupNumericCellValue(get().cells, reference),
         )
-      } catch (formulaError) {
+      }
+      catch (formulaError) {
         throwFormulaError(formulaError)
       }
 
@@ -122,17 +125,18 @@ export function createSpreadsheetStore({
 
       if (rawInput.startsWith(FORMULA_PREFIX)) {
         applyFormulaInput(canonicalCellId, rawInput)
-      } else {
+      }
+      else {
         applyLiteralInput(canonicalCellId, rawInput)
       }
     }
 
     return {
-      getCell: (cellId) => get().cells.get(getCellId(cellId, columns, rows)) ?? EMPTY_CELL,
-      selectCell: (cellId) => set({ selectedCellId: getCellId(cellId, columns, rows) }),
+      getCell: cellId => get().cells.get(getCellId(cellId, columns, rows)) ?? EMPTY_CELL,
+      selectCell: cellId => set({ selectedCellId: getCellId(cellId, columns, rows) }),
       cells: new Map(),
       selectedCellId: getCellId('A1', columns, rows),
-      setCell
+      setCell,
     }
   })
 

@@ -9,30 +9,30 @@ export type TokenFixture = WithoutPosition<Token>
 export const number = (value: number, lexeme = String(value)): TokenFixture => ({
   lexeme,
   type: 'number',
-  value
+  value,
 })
 
 export const cell = (reference: string, lexeme = reference): TokenFixture => ({
   lexeme,
   reference,
-  type: 'cell'
+  type: 'cell',
 })
 
 export const identifier = (name: string, lexeme = name): TokenFixture => ({
   lexeme,
   name,
-  type: 'identifier'
+  type: 'identifier',
 })
 
 export const operator = (value: Operator): TokenFixture => ({
   lexeme: value,
   operator: value,
-  type: 'operator'
+  type: 'operator',
 })
 
 const symbol = (
   lexeme: '(' | ')' | ',' | ':',
-  type: 'colon' | 'comma' | 'leftParen' | 'rightParen'
+  type: 'colon' | 'comma' | 'leftParen' | 'rightParen',
 ): TokenFixture => ({ lexeme, type })
 
 export const leftParen = symbol('(', 'leftParen')

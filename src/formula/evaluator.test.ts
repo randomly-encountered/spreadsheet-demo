@@ -4,7 +4,7 @@ import { collectReferencedCellIds, evaluate, EvaluationError } from '#/formula/e
 import {
   createCellValueLookup,
   expectFormulaEvaluationError,
-  parseFormula
+  parseFormula,
 } from '#/formula/evaluator.test-helpers'
 
 const lookup = createCellValueLookup({ A1: 2, A2: 3, B1: 5, B2: 7 })
@@ -18,7 +18,7 @@ describe('evaluate', () => {
     ['(2 + 3) * 4', 20],
     ['2 ^ 3 ^ 2', 512],
     ['-2 ^ 2', -4],
-    ['--2', 2]
+    ['--2', 2],
   ])('evaluates %s', (source, expected) => {
     expect(evaluate(parseFormula(source), lookup)).toBe(expected)
   })
@@ -56,7 +56,7 @@ describe('evaluate', () => {
     ['SQRT(-1)', 'calculation'],
     ['10 ^ 1000', 'calculation'],
     ['MOD(1, 0)', 'calculation'],
-    ['SUM(A1:A10001)', 'invalid-range']
+    ['SUM(A1:A10001)', 'invalid-range'],
   ] as const)('reports %s as %s', (source, code) => {
     expectFormulaEvaluationError(source, code, lookup)
   })
@@ -76,7 +76,7 @@ describe('collectReferencedCellIds', () => {
       'A1',
       'B1',
       'A2',
-      'B2'
+      'B2',
     ])
   })
 
@@ -86,13 +86,13 @@ describe('collectReferencedCellIds', () => {
 
   it('rejects reversed ranges', () => {
     expect(() => collectReferencedCellIds(parseFormula('SUM(B2:A1)'))).toThrowError(
-      EvaluationError
+      EvaluationError,
     )
   })
 
   it('rejects ranges large enough to exhaust the UI thread', () => {
     expect(() => collectReferencedCellIds(parseFormula('SUM(A1:A10001)'))).toThrowError(
-      EvaluationError
+      EvaluationError,
     )
   })
 })

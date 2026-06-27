@@ -10,7 +10,8 @@ export function getCellId(cellId: CellId, columnCount: number, rowCount: number)
 
   try {
     coordinates = getCellCoordinatesFromId(normalizedCellId)
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof EvaluationError) {
       throw new CellError('reference', error.message)
     }
@@ -28,7 +29,7 @@ export function getCellId(cellId: CellId, columnCount: number, rowCount: number)
 /** Applies spreadsheet coercion rules when a formula reads another cell. */
 export function getCellNumericValue(
   cellsById: ReadonlyMap<CellId, Cell>,
-  cellId: CellId
+  cellId: CellId,
 ): number | undefined {
   const referencedCell = cellsById.get(cellId)
 

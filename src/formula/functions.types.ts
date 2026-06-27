@@ -11,7 +11,7 @@ export const FORMULA_FUNCTION_NAMES = [
   'PRODUCT',
   'ROUND',
   'SQRT',
-  'SUM'
+  'SUM',
 ] as const
 
 export type FormulaFunctionName = (typeof FORMULA_FUNCTION_NAMES)[number]

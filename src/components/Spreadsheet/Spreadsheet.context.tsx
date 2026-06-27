@@ -3,7 +3,7 @@ import { useStore } from 'zustand'
 
 import {
   type SpreadsheetState,
-  type SpreadsheetStore
+  type SpreadsheetStore,
 } from '#/spreadsheet/store'
 
 export const SpreadsheetStoreContext = createContext<SpreadsheetStore | null>(null)

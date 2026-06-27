@@ -8,20 +8,21 @@ import { tokenize } from '#/formula/tokenizer'
 
 export const parseFormula = (source: string): Expression => parse(tokenize(source))
 
-export const createCellValueLookup =
-  (values: Readonly<Record<string, number>>): CellValueLookup =>
-  (cellId) =>
-    values[cellId]
+export const createCellValueLookup
+  = (values: Readonly<Record<string, number>>): CellValueLookup =>
+    cellId =>
+      values[cellId]
 
 export const expectFormulaEvaluationError = (
   source: string,
   type: EvaluationErrorType,
-  lookup: CellValueLookup
+  lookup: CellValueLookup,
 ): void => {
   try {
     evaluate(parseFormula(source), lookup)
     throw new Error('Expected evaluation to fail')
-  } catch (error) {
+  }
+  catch (error) {
     expect(error).toBeInstanceOf(EvaluationError)
     expect((error as EvaluationError).type).toBe(type)
   }

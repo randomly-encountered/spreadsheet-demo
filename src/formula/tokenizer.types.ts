@@ -6,28 +6,28 @@ type PositionedToken = {
   start: number
 }
 
-export type Token =
+export type Token
+  = | (PositionedToken & {
+    type: 'number'
+    value: number
+  })
   | (PositionedToken & {
-      type: 'number'
-      value: number
-    })
+    reference: string
+    type: 'cell'
+  })
   | (PositionedToken & {
-      reference: string
-      type: 'cell'
-    })
+    name: string
+    type: 'identifier'
+  })
   | (PositionedToken & {
-      name: string
-      type: 'identifier'
-    })
+    lexeme: Operator
+    operator: Operator
+    type: 'operator'
+  })
   | (PositionedToken & {
-      lexeme: Operator
-      operator: Operator
-      type: 'operator'
-    })
+    type: 'leftParen' | 'rightParen' | 'comma' | 'colon'
+  })
   | (PositionedToken & {
-      type: 'leftParen' | 'rightParen' | 'comma' | 'colon'
-    })
-  | (PositionedToken & {
-      lexeme: ''
-      type: 'eof'
-    })
+    lexeme: ''
+    type: 'eof'
+  })

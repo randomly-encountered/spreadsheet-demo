@@ -5,7 +5,7 @@ import {
   evaluateFunction,
   evaluateFunctionValues,
   requireFormulaFunction,
-  toMixedCase
+  toMixedCase,
 } from '#/formula/functions.test-helpers'
 import { FORMULA_FUNCTION_NAMES } from '#/formula/functions.types'
 
@@ -37,16 +37,16 @@ describe('function registry', () => {
     ['CEILING', 1, 1, false],
     ['SQRT', 1, 1, false],
     ['POWER', 2, 2, false],
-    ['MOD', 2, 2, false]
+    ['MOD', 2, 2, false],
   ] as const)(
     'describes the invocation contract for %s',
     (name, minimumArguments, maximumArguments, acceptsRanges) => {
       expect(requireFormulaFunction(name)).toMatchObject({
         acceptsRanges,
         maximumArguments,
-        minimumArguments
+        minimumArguments,
       })
-    }
+    },
   )
 })
 
@@ -57,7 +57,7 @@ describe('aggregate functions', () => {
     ['MIN', [2, -3, 4], -3],
     ['MAX', [2, -3, 4], 4],
     ['COUNT', [2, -3, 4], 3],
-    ['PRODUCT', [2, -3, 4], -24]
+    ['PRODUCT', [2, -3, 4], -24],
   ] as const)('%s evaluates mixed-sign values', (name, values, expected) => {
     expect(evaluateFunction(name, ...values)).toBe(expected)
   })
@@ -90,7 +90,7 @@ describe('aggregate functions', () => {
     ['MIN', 7],
     ['MAX', 7],
     ['COUNT', 1],
-    ['PRODUCT', 7]
+    ['PRODUCT', 7],
   ] as const)('%s handles a singleton input', (name, expected) => {
     expect(evaluateFunction(name, 7)).toBe(expected)
   })
@@ -144,7 +144,7 @@ describe('scalar functions', () => {
     ['MOD', [7, -3], -2],
     ['MOD', [-7, -3], -1],
     ['MOD', [6, 3], 0],
-    ['MOD', [6, -3], 0]
+    ['MOD', [6, -3], 0],
   ] as const)('%s evaluates %j', (name, values, expected) => {
     expect(evaluateFunction(name, ...values)).toBe(expected)
   })

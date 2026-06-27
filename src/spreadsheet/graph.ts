@@ -33,7 +33,7 @@ export function createDependencyGraph(): DependencyGraph {
 
     for (const cellId of cellIds) {
       const unresolvedDependencyCount = [...getDependenciesFor(cellId)].filter(
-        (dependencyCellId) => cellIds.has(dependencyCellId)
+        dependencyCellId => cellIds.has(dependencyCellId),
       ).length
 
       unresolvedDependencyCounts.set(cellId, unresolvedDependencyCount)
@@ -51,8 +51,8 @@ export function createDependencyGraph(): DependencyGraph {
       for (const dependentCellId of getDependentsFor(readyCellId)) {
         if (!cellIds.has(dependentCellId)) continue
 
-        const unresolvedDependencyCount =
-          (unresolvedDependencyCounts.get(dependentCellId) ?? 0) - 1
+        const unresolvedDependencyCount
+          = (unresolvedDependencyCounts.get(dependentCellId) ?? 0) - 1
         unresolvedDependencyCounts.set(dependentCellId, unresolvedDependencyCount)
         if (unresolvedDependencyCount === 0) readyCellIds.push(dependentCellId)
       }
@@ -68,7 +68,7 @@ export function createDependencyGraph(): DependencyGraph {
   // A cycle exists if the proposed dependencies eventually lead back to this cell.
   function hasCyclicDependenciesFor(
     cellId: CellId,
-    proposedDependencies: ReadonlySet<CellId>
+    proposedDependencies: ReadonlySet<CellId>,
   ): boolean {
     const dependenciesToCheck = [...proposedDependencies]
     const dependenciesAddedToCheck = new Set(proposedDependencies)
@@ -106,7 +106,7 @@ export function createDependencyGraph(): DependencyGraph {
   // Validate and atomically replace a cell's dependency relationships in both indexes.
   function setDependenciesFor(
     cellId: CellId,
-    proposedDependencies: ReadonlySet<CellId>
+    proposedDependencies: ReadonlySet<CellId>,
   ): boolean {
     const nextDependencies = new Set(proposedDependencies)
 
@@ -134,6 +134,6 @@ export function createDependencyGraph(): DependencyGraph {
     getDependenciesFor,
     getDependentsFor,
     getDependentsInEvaluationOrder,
-    setDependenciesFor
+    setDependenciesFor,
   }
 }

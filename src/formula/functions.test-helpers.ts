@@ -10,7 +10,7 @@ export const evaluateFunction = (name: FormulaFunctionName, ...values: number[])
 /** Passes an existing value collection without spreading large ranges onto the call stack. */
 export const evaluateFunctionValues = (
   name: FormulaFunctionName,
-  values: readonly number[]
+  values: readonly number[],
 ): number => requireFormulaFunction(name).evaluate(values)
 
 /**

@@ -11,7 +11,7 @@ import {
   operator,
   parseTokens,
   rightParen,
-  type TokenFixture
+  type TokenFixture,
 } from '#/formula/parser.test-helpers'
 import { ParserError } from '#/formula/parser.error'
 
@@ -30,32 +30,32 @@ describe('parse', () => {
         number(2),
         rightParen,
         operator('*'),
-        number(3)
-      )
+        number(3),
+      ),
     ).toEqual({
       left: {
         left: { type: 'numberLiteral', value: 1 },
         operator: '+',
         right: { type: 'numberLiteral', value: 2 },
-        type: 'binaryExpression'
+        type: 'binaryExpression',
       },
       operator: '*',
       right: { type: 'numberLiteral', value: 3 },
-      type: 'binaryExpression'
+      type: 'binaryExpression',
     })
   })
 
   it('parses multiplication before addition', () => {
     expect(parseTokens(number(1), operator('+'), number(2), operator('*'), number(3))).toEqual({
+      left: { type: 'numberLiteral', value: 1 },
+      operator: '+',
       right: {
         left: { type: 'numberLiteral', value: 2 },
         operator: '*',
         right: { type: 'numberLiteral', value: 3 },
-        type: 'binaryExpression'
+        type: 'binaryExpression',
       },
-      left: { type: 'numberLiteral', value: 1 },
-      operator: '+',
-      type: 'binaryExpression'
+      type: 'binaryExpression',
     })
   })
 
@@ -65,11 +65,11 @@ describe('parse', () => {
         left: { type: 'numberLiteral', value: 10 },
         operator: '-',
         right: { type: 'numberLiteral', value: 3 },
-        type: 'binaryExpression'
+        type: 'binaryExpression',
       },
       operator: '+',
       right: { type: 'numberLiteral', value: 1 },
-      type: 'binaryExpression'
+      type: 'binaryExpression',
     })
 
     expect(parseTokens(number(12), operator('/'), number(3), operator('*'), number(2))).toEqual({
@@ -77,25 +77,25 @@ describe('parse', () => {
         left: { type: 'numberLiteral', value: 12 },
         operator: '/',
         right: { type: 'numberLiteral', value: 3 },
-        type: 'binaryExpression'
+        type: 'binaryExpression',
       },
       operator: '*',
       right: { type: 'numberLiteral', value: 2 },
-      type: 'binaryExpression'
+      type: 'binaryExpression',
     })
   })
 
   it('parses exponentiation right-associatively', () => {
     expect(parseTokens(number(2), operator('^'), number(3), operator('^'), number(2))).toEqual({
+      left: { type: 'numberLiteral', value: 2 },
+      operator: '^',
       right: {
         left: { type: 'numberLiteral', value: 3 },
         operator: '^',
         right: { type: 'numberLiteral', value: 2 },
-        type: 'binaryExpression'
+        type: 'binaryExpression',
       },
-      left: { type: 'numberLiteral', value: 2 },
-      operator: '^',
-      type: 'binaryExpression'
+      type: 'binaryExpression',
     })
   })
 
@@ -105,21 +105,21 @@ describe('parse', () => {
         left: { type: 'numberLiteral', value: 2 },
         operator: '^',
         right: { type: 'numberLiteral', value: 2 },
-        type: 'binaryExpression'
+        type: 'binaryExpression',
       },
       operator: '-',
-      type: 'unaryExpression'
+      type: 'unaryExpression',
     })
 
     expect(parseTokens(number(2), operator('^'), operator('-'), number(3))).toEqual({
+      left: { type: 'numberLiteral', value: 2 },
+      operator: '^',
       right: {
         operand: { type: 'numberLiteral', value: 3 },
         operator: '-',
-        type: 'unaryExpression'
+        type: 'unaryExpression',
       },
-      left: { type: 'numberLiteral', value: 2 },
-      operator: '^',
-      type: 'binaryExpression'
+      type: 'binaryExpression',
     })
   })
 
@@ -128,10 +128,10 @@ describe('parse', () => {
       operand: {
         operand: { reference: 'A1', type: 'cellReference' },
         operator: '-',
-        type: 'unaryExpression'
+        type: 'unaryExpression',
       },
       operator: '+',
-      type: 'unaryExpression'
+      type: 'unaryExpression',
     })
   })
 
@@ -140,29 +140,29 @@ describe('parse', () => {
       left: {
         operand: { type: 'numberLiteral', value: 2 },
         operator: '-',
-        type: 'unaryExpression'
+        type: 'unaryExpression',
       },
       operator: '*',
       right: { type: 'numberLiteral', value: 3 },
-      type: 'binaryExpression'
+      type: 'binaryExpression',
     })
 
     expect(parseTokens(number(1), operator('+'), operator('-'), number(2))).toEqual({
+      left: { type: 'numberLiteral', value: 1 },
+      operator: '+',
       right: {
         operand: { type: 'numberLiteral', value: 2 },
         operator: '-',
-        type: 'unaryExpression'
+        type: 'unaryExpression',
       },
-      left: { type: 'numberLiteral', value: 1 },
-      operator: '+',
-      type: 'binaryExpression'
+      type: 'binaryExpression',
     })
   })
 
   it('parses nested parentheses without adding structural nodes', () => {
     expect(parseTokens(leftParen, leftParen, cell('A1'), rightParen, rightParen)).toEqual({
       reference: 'A1',
-      type: 'cellReference'
+      type: 'cellReference',
     })
   })
 
@@ -170,7 +170,7 @@ describe('parse', () => {
     expect(parseTokens(cell('A1', 'a1'), colon, cell('B5'))).toEqual({
       end: { reference: 'B5', type: 'cellReference' },
       start: { reference: 'A1', type: 'cellReference' },
-      type: 'rangeReference'
+      type: 'rangeReference',
     })
   })
 
@@ -186,24 +186,24 @@ describe('parse', () => {
         cell('C1'),
         operator('+'),
         number(2),
-        rightParen
-      )
+        rightParen,
+      ),
     ).toEqual({
       arguments: [
         {
           end: { reference: 'A3', type: 'cellReference' },
           start: { reference: 'A1', type: 'cellReference' },
-          type: 'rangeReference'
+          type: 'rangeReference',
         },
         {
           left: { reference: 'C1', type: 'cellReference' },
           operator: '+',
           right: { type: 'numberLiteral', value: 2 },
-          type: 'binaryExpression'
-        }
+          type: 'binaryExpression',
+        },
       ],
       name: 'SUM',
-      type: 'functionCall'
+      type: 'functionCall',
     })
   })
 
@@ -222,22 +222,22 @@ describe('parse', () => {
         identifier('EMPTY'),
         leftParen,
         rightParen,
-        rightParen
-      )
+        rightParen,
+      ),
     ).toEqual({
       arguments: [
         {
           arguments: [
             { reference: 'A1', type: 'cellReference' },
-            { type: 'numberLiteral', value: 2 }
+            { type: 'numberLiteral', value: 2 },
           ],
           name: 'ROUND',
-          type: 'functionCall'
+          type: 'functionCall',
         },
-        { arguments: [], name: 'EMPTY', type: 'functionCall' }
+        { arguments: [], name: 'EMPTY', type: 'functionCall' },
       ],
       name: 'MYSTERY',
-      type: 'functionCall'
+      type: 'functionCall',
     })
   })
 
@@ -256,14 +256,14 @@ describe('parse', () => {
     [
       'value after function call',
       [identifier('SUM'), leftParen, number(1), rightParen, number(2)],
-      6
-    ]
+      6,
+    ],
   ])('rejects %s at the expected position', (_name, tokens, position) => {
     expect(() => parseTokens(...tokens)).toThrow(
       expect.objectContaining<Partial<ParserError>>({
         name: 'ParserError',
-        position
-      })
+        position,
+      }),
     )
   })
 
@@ -272,8 +272,8 @@ describe('parse', () => {
       parse([
         { end: 1, lexeme: '1', start: 0, type: 'number', value: 1 },
         { end: 1, lexeme: '', start: 1, type: 'eof' },
-        { end: 2, lexeme: '2', start: 1, type: 'number', value: 2 }
-      ])
+        { end: 2, lexeme: '2', start: 1, type: 'number', value: 2 },
+      ]),
     ).toThrow(expect.objectContaining<Partial<ParserError>>({ position: 1 }))
   })
 })

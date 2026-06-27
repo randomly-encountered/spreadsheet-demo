@@ -12,7 +12,7 @@ describe('tokenize', () => {
     expect(tokenize('42 3.14')).toEqual([
       { end: 2, lexeme: '42', start: 0, type: 'number', value: 42 },
       { end: 7, lexeme: '3.14', start: 3, type: 'number', value: 3.14 },
-      { end: 7, lexeme: '', start: 7, type: 'eof' }
+      { end: 7, lexeme: '', start: 7, type: 'eof' },
     ])
   })
 
@@ -20,7 +20,7 @@ describe('tokenize', () => {
     expect(tokenize('.5 5.')).toEqual([
       { end: 2, lexeme: '.5', start: 0, type: 'number', value: 0.5 },
       { end: 5, lexeme: '5.', start: 3, type: 'number', value: 5 },
-      { end: 5, lexeme: '', start: 5, type: 'eof' }
+      { end: 5, lexeme: '', start: 5, type: 'eof' },
     ])
   })
 
@@ -28,7 +28,7 @@ describe('tokenize', () => {
     expect(tokenize('a1 AA10')).toEqual([
       { end: 2, lexeme: 'a1', reference: 'A1', start: 0, type: 'cell' },
       { end: 7, lexeme: 'AA10', reference: 'AA10', start: 3, type: 'cell' },
-      { end: 7, lexeme: '', start: 7, type: 'eof' }
+      { end: 7, lexeme: '', start: 7, type: 'eof' },
     ])
   })
 
@@ -40,9 +40,9 @@ describe('tokenize', () => {
         lexeme: 'ROUND',
         name: 'ROUND',
         start: 4,
-        type: 'identifier'
+        type: 'identifier',
       },
-      { end: 9, lexeme: '', start: 9, type: 'eof' }
+      { end: 9, lexeme: '', start: 9, type: 'eof' },
     ])
   })
 
@@ -53,26 +53,26 @@ describe('tokenize', () => {
         lexeme: 'mystery',
         name: 'MYSTERY',
         start: 0,
-        type: 'identifier'
+        type: 'identifier',
       },
-      { end: 7, lexeme: '', start: 7, type: 'eof' }
+      { end: 7, lexeme: '', start: 7, type: 'eof' },
     ])
   })
 
   it('leaves cell-bound validation to a later stage', () => {
     expect(tokenize('A0')).toEqual([
       { end: 2, lexeme: 'A0', reference: 'A0', start: 0, type: 'cell' },
-      { end: 2, lexeme: '', start: 2, type: 'eof' }
+      { end: 2, lexeme: '', start: 2, type: 'eof' },
     ])
   })
 
   it('tokenizes every supported operator and delimiter', () => {
     expect(
-      tokenize('+ - * / ^ ( ) , :').map((token) =>
+      tokenize('+ - * / ^ ( ) , :').map(token =>
         token.type === 'operator'
           ? { lexeme: token.lexeme, operator: token.operator, type: token.type }
-          : { lexeme: token.lexeme, type: token.type }
-      )
+          : { lexeme: token.lexeme, type: token.type },
+      ),
     ).toEqual([
       { lexeme: '+', operator: '+', type: 'operator' },
       { lexeme: '-', operator: '-', type: 'operator' },
@@ -83,7 +83,7 @@ describe('tokenize', () => {
       { lexeme: ')', type: 'rightParen' },
       { lexeme: ',', type: 'comma' },
       { lexeme: ':', type: 'colon' },
-      { lexeme: '', type: 'eof' }
+      { lexeme: '', type: 'eof' },
     ])
   })
 
@@ -99,7 +99,7 @@ describe('tokenize', () => {
       { lexeme: ',', type: 'comma' },
       { lexeme: '10', type: 'number' },
       { lexeme: ')', type: 'rightParen' },
-      { lexeme: '', type: 'eof' }
+      { lexeme: '', type: 'eof' },
     ])
   })
 
@@ -107,8 +107,8 @@ describe('tokenize', () => {
     expect(
       tokenize('ROUND(A1 / B2, 2) ^ -3').map(({ lexeme, type }) => ({
         lexeme,
-        type
-      }))
+        type,
+      })),
     ).toEqual([
       { lexeme: 'ROUND', type: 'identifier' },
       { lexeme: '(', type: 'leftParen' },
@@ -121,7 +121,7 @@ describe('tokenize', () => {
       { lexeme: '^', type: 'operator' },
       { lexeme: '-', type: 'operator' },
       { lexeme: '3', type: 'number' },
-      { lexeme: '', type: 'eof' }
+      { lexeme: '', type: 'eof' },
     ])
   })
 
@@ -133,10 +133,10 @@ describe('tokenize', () => {
         lexeme: '+',
         operator: '+',
         start: 4,
-        type: 'operator'
+        type: 'operator',
       },
       { end: 7, lexeme: '2', start: 6, type: 'number', value: 2 },
-      { end: 7, lexeme: '', start: 7, type: 'eof' }
+      { end: 7, lexeme: '', start: 7, type: 'eof' },
     ])
   })
 
@@ -144,8 +144,8 @@ describe('tokenize', () => {
     expect(() => tokenize('A1 @ B1')).toThrow(
       expect.objectContaining<Partial<TokenizerError>>({
         name: 'TokenizerError',
-        position: 3
-      })
+        position: 3,
+      }),
     )
   })
 
@@ -157,25 +157,25 @@ describe('tokenize', () => {
     ['.', 0],
     ['1..2', 2],
     ['A1B2', 2],
-    ['12A1', 2]
+    ['12A1', 2],
   ])('rejects malformed lexical boundaries in %s', (expression, position) => {
     expect(() => tokenize(expression)).toThrow(
       expect.objectContaining<Partial<TokenizerError>>({
         name: 'TokenizerError',
-        position
-      })
+        position,
+      }),
     )
   })
 
   it.each([
     ['=A1', 0],
-    ['$A$1', 0]
+    ['$A$1', 0],
   ])('rejects characters outside the tokenizer grammar in %s', (expression, position) => {
     expect(() => tokenize(expression)).toThrow(
       expect.objectContaining<Partial<TokenizerError>>({
         name: 'TokenizerError',
-        position
-      })
+        position,
+      }),
     )
   })
 })

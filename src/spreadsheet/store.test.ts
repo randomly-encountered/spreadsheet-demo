@@ -27,7 +27,7 @@ describe('SpreadsheetStore', () => {
 
   it('fails store creation when an initial value is invalid', () => {
     expect(() =>
-      createSpreadsheetStore({ initialValues: [['A1', '=1 +']] })
+      createSpreadsheetStore({ initialValues: [['A1', '=1 +']] }),
     ).toThrowError(CellError)
   })
 
@@ -137,7 +137,7 @@ describe('SpreadsheetStore', () => {
     spreadsheet.setCell('B1', '2')
 
     expect(() => spreadsheet.setCell('B1', '=A1 + 1')).toThrowError(
-      new CellError('cycle', 'Formula creates a circular dependency')
+      new CellError('cycle', 'Formula creates a circular dependency'),
     )
     expect(spreadsheet.getCell('B1')).toEqual({ raw: '2', value: '2' })
     expect(spreadsheet.getCell('A1')).toEqual({ raw: '=B1 + 1', value: 3 })
@@ -168,7 +168,7 @@ describe('SpreadsheetStore', () => {
     spreadsheet.setCell('A1', 'words')
     expect(spreadsheet.getCell('B1')).toMatchObject({
       error: { type: 'reference' },
-      raw: '=A1 + 1'
+      raw: '=A1 + 1',
     })
   })
 
@@ -204,7 +204,7 @@ describe('SpreadsheetStore', () => {
     const spreadsheet = createSpreadsheet()
 
     expect(() => spreadsheet.getCell('not-a-cell')).toThrow(
-      'Invalid cell reference NOT-A-CELL'
+      'Invalid cell reference NOT-A-CELL',
     )
   })
 })

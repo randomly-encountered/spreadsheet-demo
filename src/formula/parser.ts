@@ -39,7 +39,7 @@ class Parser {
         left: expression,
         operator,
         right: this.parseMultiplicative(),
-        type: 'binaryExpression'
+        type: 'binaryExpression',
       }
     }
 
@@ -56,7 +56,7 @@ class Parser {
         left: expression,
         operator,
         right: this.parseUnary(),
-        type: 'binaryExpression'
+        type: 'binaryExpression',
       }
     }
 
@@ -70,7 +70,7 @@ class Parser {
       return {
         operand: this.parseUnary(),
         operator,
-        type: 'unaryExpression'
+        type: 'unaryExpression',
       }
     }
 
@@ -88,7 +88,7 @@ class Parser {
       left,
       operator: '^',
       right: this.parseUnary(),
-      type: 'binaryExpression'
+      type: 'binaryExpression',
     }
   }
 
@@ -112,7 +112,7 @@ class Parser {
       default:
         throw new ParserError(
           `Expected expression, found ${token.lexeme || 'end of input'}`,
-          token.start
+          token.start,
         )
     }
   }
@@ -128,7 +128,7 @@ class Parser {
     return {
       end: { reference: end.reference, type: 'cellReference' },
       start: startReference,
-      type: 'rangeReference'
+      type: 'rangeReference',
     }
   }
 
@@ -176,7 +176,7 @@ class Parser {
 
   private expect<Type extends Token['type']>(
     type: Type,
-    message: string
+    message: string,
   ): Extract<Token, { type: Type }> {
     const token = this.current()
     if (token.type !== type) throw new ParserError(message, token.start)

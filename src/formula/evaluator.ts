@@ -4,7 +4,7 @@ import {
   isFiniteResult,
   getNormalizedCellId,
   iterateRange,
-  readReferencedCellValue
+  readReferencedCellValue,
 } from '#/formula/evaluator.helpers'
 import type { CellValueLookup } from '#/formula/evaluator.types'
 import { getFormulaFunction } from '#/formula/functions'
@@ -54,12 +54,12 @@ const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number
 
       const argumentCount = expression.arguments.length
       if (
-        argumentCount < definition.minimumArguments ||
-        (definition.maximumArguments !== null && argumentCount > definition.maximumArguments)
+        argumentCount < definition.minimumArguments
+        || (definition.maximumArguments !== null && argumentCount > definition.maximumArguments)
       ) {
         throw new EvaluationError(
           'argument-count',
-          `${expression.name} received ${argumentCount} arguments`
+          `${expression.name} received ${argumentCount} arguments`,
         )
       }
 
@@ -74,7 +74,7 @@ const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number
         if (!definition.acceptsRanges) {
           throw new EvaluationError(
             'range-not-allowed',
-            `${expression.name} does not accept ranges`
+            `${expression.name} does not accept ranges`,
           )
         }
 

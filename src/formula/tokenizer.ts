@@ -21,7 +21,7 @@ const isWhitespace = (character: string) => /\s/.test(character)
 function advanceWhile(
   expression: string,
   start: number,
-  predicate: (character: string) => boolean
+  predicate: (character: string) => boolean,
 ): number {
   let end = start
   while (end < expression.length && predicate(expression[end])) end += 1

@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
-import type { ChangeEvent, KeyboardEvent, PointerEvent, RefObject } from 'react'
+import type { ChangeEvent, KeyboardEvent, RefObject } from 'react'
 
 import styles from '#/components/Spreadsheet/FormulaBar.module.css'
 import { useSpreadsheetStore } from '#/components/Spreadsheet/Spreadsheet.context'

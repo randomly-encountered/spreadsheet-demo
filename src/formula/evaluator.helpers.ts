@@ -51,7 +51,7 @@ export function getCellCoordinatesFromId(cellId: string): CellCoordinates {
 
   return {
     x: columnNameToNumber(columnName),
-    y: Number(rowNumberText)
+    y: Number(rowNumberText),
   }
 }
 
@@ -72,7 +72,7 @@ export function* iterateRange({ end, start }: RangeReference): Generator<string>
   if (startCell.x > endCell.x || startCell.y > endCell.y) {
     throw new EvaluationError(
       'invalid-range',
-      `Range ${start.reference}:${end.reference} is reversed`
+      `Range ${start.reference}:${end.reference} is reversed`,
     )
   }
 
@@ -83,7 +83,7 @@ export function* iterateRange({ end, start }: RangeReference): Generator<string>
   if (width > MAX_EXPANDED_RANGE_SIZE / height) {
     throw new EvaluationError(
       'invalid-range',
-      `Range ${start.reference}:${end.reference} is too large`
+      `Range ${start.reference}:${end.reference} is too large`,
     )
   }
 

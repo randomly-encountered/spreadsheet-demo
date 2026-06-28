@@ -23,7 +23,7 @@ export type SpreadsheetStoreOptions = {
 export type SpreadsheetState = {
   getCell: (cellId: CellId) => Readonly<Cell>
   selectCell: (cellId: CellId) => void
-  setCell: (cellId: CellId, raw: string) => void
+  setCell: (cellId: CellId, raw: string) => string
   cells: ReadonlyMap<CellId, Cell>
   selectedCellId: CellId | null
 }
@@ -89,12 +89,19 @@ export function createSpreadsheetStore({
       set({ cells })
     }
 
-    function applyLiteralInput(cellId: CellId, rawInput: string) {
+    function applyLiteralInput(cellId: CellId, rawInput: string): string {
+      const numericValue = Number(rawInput)
+      const normalizedInput = rawInput.trim() && Number.isFinite(numericValue)
+        ? String(numericValue)
+        : rawInput
+
       dependencyGraph.setDependenciesFor(cellId, new Set())
       applyCellUpdate(cellId, {
-        raw: rawInput,
-        value: rawInput || null,
+        raw: normalizedInput,
+        value: normalizedInput || null,
       })
+
+      return normalizedInput
     }
 
     function applyFormulaInput(cellId: CellId, rawInput: string): void {
@@ -120,15 +127,15 @@ export function createSpreadsheetStore({
       applyCellUpdate(cellId, { raw: rawInput, value }, expression)
     }
 
-    function setCell(cellId: CellId, rawInput: string): void {
+    function setCell(cellId: CellId, rawInput: string): string {
       const canonicalCellId = getCellId(cellId, columns, rows)
 
       if (rawInput.startsWith(FORMULA_PREFIX)) {
         applyFormulaInput(canonicalCellId, rawInput)
+        return rawInput
       }
-      else {
-        applyLiteralInput(canonicalCellId, rawInput)
-      }
+
+      return applyLiteralInput(canonicalCellId, rawInput)
     }
 
     return {

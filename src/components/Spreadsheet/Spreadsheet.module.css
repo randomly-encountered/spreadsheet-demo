@@ -1,6 +1,5 @@
 .container {
   background: var(--color-surface);
-  border: var(--border-width) solid var(--color-border-strong);
   border-radius: var(--radius-large);
   box-shadow: var(--shadow-workspace);
   inline-size: min(100%, var(--spreadsheet-max-inline-size));

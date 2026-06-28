@@ -57,13 +57,15 @@ describe('SpreadsheetStore', () => {
     expect(spreadsheet.getCell('B1')).toEqual({ raw: '=A1 + 5', value: 5 })
   })
 
-  it('coerces numeric-looking text only when a formula references it', () => {
+  it('stores finite numeric literals as canonical strings', () => {
     const spreadsheet = createSpreadsheet()
 
     spreadsheet.setCell('A1', ' 2.5 ')
+    spreadsheet.setCell('A2', '089')
     spreadsheet.setCell('B1', '=A1 * 2')
 
-    expect(spreadsheet.getCell('A1')).toEqual({ raw: ' 2.5 ', value: ' 2.5 ' })
+    expect(spreadsheet.getCell('A1')).toEqual({ raw: '2.5', value: '2.5' })
+    expect(spreadsheet.getCell('A2')).toEqual({ raw: '89', value: '89' })
     expect(spreadsheet.getCell('B1')).toEqual({ raw: '=A1 * 2', value: 5 })
   })
 

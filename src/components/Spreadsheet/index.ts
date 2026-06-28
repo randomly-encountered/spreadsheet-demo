@@ -1,1 +1,1 @@
-export { default } from '#/components/Spreadsheet/Spreadsheet'
+export { Spreadsheet } from '#/components/Spreadsheet/Spreadsheet'

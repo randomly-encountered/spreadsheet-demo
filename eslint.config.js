@@ -96,6 +96,21 @@ export default defineConfig([
       ],
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@stylistic/multiline-comment-style': ['error', 'starred-block'],
+      '@stylistic/object-curly-newline': [
+        'error',
+        {
+          ObjectExpression: {
+            consistent: true,
+            multiline: true
+          }
+        }
+      ],
+      '@stylistic/object-property-newline': [
+        'error',
+        {
+          allowAllPropertiesOnSameLine: true
+        }
+      ],
       'perfectionist/sort-interfaces': [
         'error',
         {

@@ -1,6 +1,7 @@
-import type { MouseEvent, KeyboardEvent, RefObject } from 'react'
+import { useRef } from 'react'
+import type { KeyboardEvent, RefObject } from 'react'
 
-import Cell from '#/components/Spreadsheet/Cell'
+import { Cell } from '#/components/Spreadsheet/Cell'
 import {
   COLUMN_COUNT,
   COLUMN_LABELS,
@@ -14,11 +15,12 @@ import styles from '#/components/Spreadsheet/Grid.module.css'
 import { useSpreadsheetStore } from '#/components/Spreadsheet/Spreadsheet.context'
 
 type GridProps = {
-  gridRef: RefObject<HTMLDivElement | null>
+  ref: RefObject<HTMLDivElement | null>
   onEditCell: () => void
 }
 
-function Grid({ gridRef, onEditCell }: GridProps) {
+export function Grid({ ref, onEditCell }: GridProps) {
+  const hasFocusRef = useRef(false)
   const selectedCellId = useSpreadsheetStore(state => state.selectedCellId)
   const selectCell = useSpreadsheetStore(state => state.selectCell)
 
@@ -30,6 +32,7 @@ function Grid({ gridRef, onEditCell }: GridProps) {
       return
     }
 
+    // determine if cell navigation is taking place via keyboard arrow keys.
     const nextIndex = getNextCellIndex(getCellIndex(selectedCellId), event.key)
 
     if (nextIndex === null) return
@@ -38,17 +41,18 @@ function Grid({ gridRef, onEditCell }: GridProps) {
     selectCell(getCellId(nextIndex))
   }
 
-  function handleClick(event: MouseEvent<HTMLDivElement>): void {
-    if (!(event.target instanceof Element)) return
-
-    const cellId = event.target.closest<HTMLElement>('[role="gridcell"]')?.dataset.cellId
-    if (!cellId) return
-
+  function handleSelectCell(cellId: string): void {
+    hasFocusRef.current = true
     selectCell(cellId)
-    gridRef.current?.focus()
+    ref.current?.focus()
   }
 
   function handleFocus(): void {
+    if (hasFocusRef.current) {
+      hasFocusRef.current = false
+      return
+    }
+
     if (selectedCellId === null) selectCell(getCellId(0))
   }
 
@@ -59,10 +63,9 @@ function Grid({ gridRef, onEditCell }: GridProps) {
       aria-label="Spreadsheet"
       aria-rowcount={ROW_COUNT + 1}
       className={styles.scrollRegion}
-      ref={gridRef}
+      ref={ref}
       role="grid"
       tabIndex={0}
-      onClick={handleClick}
       onFocus={handleFocus}
       onKeyDown={handleKeyDown}
     >
@@ -83,7 +86,7 @@ function Grid({ gridRef, onEditCell }: GridProps) {
             </span>
             {COLUMN_LABELS.map((column) => {
               const cellId = `${column}${row + 1}`
-              return <Cell cellId={cellId} key={cellId} />
+              return <Cell cellId={cellId} key={cellId} onSelect={handleSelectCell} />
             })}
           </div>
         ))}
@@ -91,5 +94,3 @@ function Grid({ gridRef, onEditCell }: GridProps) {
     </div>
   )
 }
-
-export default Grid

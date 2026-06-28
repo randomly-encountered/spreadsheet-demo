@@ -10,7 +10,5 @@ export function SpreadsheetProvider({
 }: PropsWithChildren<SpreadsheetStoreOptions>) {
   const [store] = useState(() => createSpreadsheetStore(options))
 
-  return (
-    <SpreadsheetStoreContext.Provider value={store}>{children}</SpreadsheetStoreContext.Provider>
-  )
+  return <SpreadsheetStoreContext value={store}>{children}</SpreadsheetStoreContext>
 }

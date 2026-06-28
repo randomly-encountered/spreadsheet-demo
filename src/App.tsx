@@ -1,8 +1,8 @@
 import styles from '#/App.module.css'
-import Spreadsheet from '#/components/Spreadsheet'
-import SpreadsheetFooter from '#/components/Spreadsheet/SpreadsheetFooter'
+import { Spreadsheet } from '#/components/Spreadsheet'
+import { SpreadsheetFooter } from '#/components/Spreadsheet/SpreadsheetFooter'
 
-function App() {
+export function App() {
   return (
     <main className={styles.shell}>
       <section aria-labelledby="workspace-title" className={styles.workspace}>
@@ -20,5 +20,3 @@ function App() {
     </main>
   )
 }
-
-export default App

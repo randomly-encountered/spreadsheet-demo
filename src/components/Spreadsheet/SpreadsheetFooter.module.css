@@ -5,12 +5,12 @@
   font-size: var(--font-size-small);
   gap: var(--space-compact);
   justify-content: center;
-  margin-block-start: var(--space-compact);
+  margin-block-start: var(--space-small);
 }
 
 .keyIcon {
   display: inline-flex;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .arrowKeys {

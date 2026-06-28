@@ -6,27 +6,19 @@
 }
 
 .workspace {
-  inline-size: min(100%, var(--workspace-max-inline-size));
+  inline-size: min(100%, var(--spreadsheet-max-inline-size));
 }
 
 .header {
-  align-items: end;
-  display: flex;
-  gap: var(--space-large);
-  justify-content: space-between;
   margin-block-end: var(--space-medium);
 }
 
 .eyebrow {
   color: var(--color-text-muted);
   font-size: var(--font-size-small);
-  margin: 0;
-}
-
-.eyebrow {
   font-weight: 700;
   letter-spacing: 0.12em;
-  margin-block-end: var(--space-compact);
+  margin: 0 0 var(--space-compact);
   text-transform: uppercase;
 }
 

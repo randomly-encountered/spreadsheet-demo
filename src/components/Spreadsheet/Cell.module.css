@@ -11,6 +11,11 @@
   overflow: hidden;
   padding-inline: var(--cell-padding-inline);
   position: relative;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease,
+    transform 180ms ease;
 }
 
 .value {
@@ -22,8 +27,6 @@
 
 .cell[aria-selected='true'] {
   background: var(--color-cell-selected);
-  box-shadow: var(--shadow-formula-bar);
-  z-index: 2000;
 }
 
 .cell[data-derived='true'] {
@@ -48,4 +51,28 @@
 
 .cell[aria-invalid='true']::after {
   background: var(--color-error);
+}
+
+.cell[data-editing='inactive'] {
+  /*filter: brightness(0.90);*/
+  background: var(--color-cell);
+
+}
+
+.cell[data-editing='active'] {
+  background: var(--color-cell);
+  box-shadow: 0 8px 12px rgb(16 24 40 / 16%);
+  /* transform: translateY(-2px); */
+  z-index: 2001;
+}
+
+.cell[data-dependency='true']:not([aria-invalid='true']) {
+  background: var(--color-dependency-surface);
+  color: var(--color-dependency);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell {
+    transition: none;
+  }
 }

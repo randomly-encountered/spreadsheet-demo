@@ -12,6 +12,7 @@ export type Cell = {
 
 export type DependencyGraph = {
   getDependenciesFor: (cellId: CellId) => ReadonlySet<CellId>
+  getDependencyLocusFor: (cellId: CellId) => ReadonlySet<CellId>
   getDependentsFor: (cellId: CellId) => ReadonlySet<CellId>
   getDependentsInEvaluationOrder: (cellId: CellId) => CellId[]
   setDependenciesFor: (cellId: CellId, dependencies: ReadonlySet<CellId>) => boolean

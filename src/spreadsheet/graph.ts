@@ -1,8 +1,26 @@
 import type { CellId, DependencyGraph } from '#/spreadsheet/types'
 
+function* walkRelatedCells(
+  initialCellIds: Iterable<CellId>,
+  getRelatedCellIds: (cellId: CellId) => ReadonlySet<CellId>,
+): Generator<CellId> {
+  const visitedCellIds = new Set<CellId>()
+  const cellIdStack = [...initialCellIds]
+
+  while (cellIdStack.length > 0) {
+    const cellId = cellIdStack.pop()
+    if (cellId === undefined || visitedCellIds.has(cellId)) continue
+
+    visitedCellIds.add(cellId)
+    yield cellId
+    cellIdStack.push(...getRelatedCellIds(cellId))
+  }
+}
+
 export function createDependencyGraph(): DependencyGraph {
   const dependencies = new Map<CellId, Set<CellId>>()
   const dependents = new Map<CellId, Set<CellId>>()
+  const dependencyLocusByCellId = new Map<CellId, ReadonlySet<CellId>>()
 
   function getDependenciesFor(cellId: CellId): ReadonlySet<CellId> {
     return dependencies.get(cellId) ?? new Set()
@@ -12,19 +30,20 @@ export function createDependencyGraph(): DependencyGraph {
     return dependents.get(cellId) ?? new Set()
   }
 
+  function getDependencyLocusFor(cellId: CellId): ReadonlySet<CellId> {
+    const cachedLocus = dependencyLocusByCellId.get(cellId)
+    if (cachedLocus) return cachedLocus
+
+    const dependencyLocus = new Set(
+      walkRelatedCells(getDependenciesFor(cellId), getDependenciesFor),
+    )
+
+    dependencyLocusByCellId.set(cellId, dependencyLocus)
+    return dependencyLocus
+  }
+
   function collectTransitiveDependents(cellId: CellId): Set<CellId> {
-    const transitiveDependents = new Set<CellId>()
-    const pendingCellIds = [...getDependentsFor(cellId)]
-
-    while (pendingCellIds.length > 0) {
-      const dependentCellId = pendingCellIds.pop()
-      if (dependentCellId === undefined || transitiveDependents.has(dependentCellId)) continue
-
-      transitiveDependents.add(dependentCellId)
-      pendingCellIds.push(...getDependentsFor(dependentCellId))
-    }
-
-    return transitiveDependents
+    return new Set(walkRelatedCells(getDependentsFor(cellId), getDependentsFor))
   }
 
   function sortInEvaluationOrder(cellIds: ReadonlySet<CellId>): CellId[] {
@@ -70,23 +89,8 @@ export function createDependencyGraph(): DependencyGraph {
     cellId: CellId,
     proposedDependencies: ReadonlySet<CellId>,
   ): boolean {
-    const dependenciesToCheck = [...proposedDependencies]
-    const dependenciesAddedToCheck = new Set(proposedDependencies)
-
-    while (dependenciesToCheck.length > 0) {
-      const currentDependency = dependenciesToCheck.pop()
-
-      if (currentDependency === undefined) continue
-      // The formula is cyclic if one of its dependencies leads back to this cell.
-      if (currentDependency === cellId) return true
-
-      // Check the cells referenced by this dependency next.
-      for (const dependency of dependencies.get(currentDependency) ?? []) {
-        if (dependenciesAddedToCheck.has(dependency)) continue
-
-        dependenciesAddedToCheck.add(dependency)
-        dependenciesToCheck.push(dependency)
-      }
+    for (const dependency of walkRelatedCells(proposedDependencies, getDependenciesFor)) {
+      if (dependency === cellId) return true
     }
 
     return false
@@ -112,6 +116,7 @@ export function createDependencyGraph(): DependencyGraph {
 
     if (hasCyclicDependenciesFor(cellId, nextDependencies)) return false
 
+    dependencyLocusByCellId.clear()
     removeDependentReferencesFor(cellId)
 
     if (nextDependencies.size === 0) {
@@ -132,6 +137,7 @@ export function createDependencyGraph(): DependencyGraph {
 
   return {
     getDependenciesFor,
+    getDependencyLocusFor,
     getDependentsFor,
     getDependentsInEvaluationOrder,
     setDependenciesFor,

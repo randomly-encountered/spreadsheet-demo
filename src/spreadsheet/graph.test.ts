@@ -95,6 +95,23 @@ describe('DependencyGraph', () => {
     expect(orderedDependents.indexOf('D1')).toBeLessThan(orderedDependents.indexOf('E1'))
   })
 
+  it('caches each transitive dependency locus by cell ID and invalidates it after updates', () => {
+    const graph = createDependencyGraph()
+    graph.setDependenciesFor('B1', new Set(['A1']))
+    graph.setDependenciesFor('C1', new Set(['B1']))
+
+    const initialLocus = graph.getDependencyLocusFor('C1')
+
+    expect(initialLocus).toEqual(new Set(['A1', 'B1']))
+    expect(graph.getDependencyLocusFor('C1')).toBe(initialLocus)
+
+    graph.setDependenciesFor('B1', new Set(['D1']))
+
+    const updatedLocus = graph.getDependencyLocusFor('C1')
+    expect(updatedLocus).not.toBe(initialLocus)
+    expect(updatedLocus).toEqual(new Set(['B1', 'D1']))
+  })
+
   it('keeps other dependents when one is removed', () => {
     const { getDependenciesFor, getDependentsFor, setDependenciesFor } = createDependencyGraph()
     setDependenciesFor('B1', new Set(['A1']))

@@ -15,11 +15,12 @@ import styles from '#/components/Spreadsheet/Grid.module.css'
 import { useSpreadsheetStore } from '#/components/Spreadsheet/Spreadsheet.context'
 
 type GridProps = {
+  isEditing: boolean
   ref: RefObject<HTMLDivElement | null>
   onEditCell: () => void
 }
 
-export function Grid({ ref, onEditCell }: GridProps) {
+export function Grid({ isEditing, ref, onEditCell }: GridProps) {
   const hasFocusRef = useRef(false)
   const selectedCellId = useSpreadsheetStore(state => state.selectedCellId)
   const selectCell = useSpreadsheetStore(state => state.selectCell)
@@ -45,6 +46,11 @@ export function Grid({ ref, onEditCell }: GridProps) {
     hasFocusRef.current = true
     selectCell(cellId)
     ref.current?.focus()
+  }
+
+  function handleEditCell(cellId: string): void {
+    selectCell(cellId)
+    onEditCell()
   }
 
   function handleFocus(): void {
@@ -86,7 +92,15 @@ export function Grid({ ref, onEditCell }: GridProps) {
             </span>
             {COLUMN_LABELS.map((column) => {
               const cellId = `${column}${row + 1}`
-              return <Cell cellId={cellId} key={cellId} onSelect={handleSelectCell} />
+              return (
+                <Cell
+                  cellId={cellId}
+                  isEditing={isEditing}
+                  key={cellId}
+                  onEdit={handleEditCell}
+                  onSelect={handleSelectCell}
+                />
+              )
             })}
           </div>
         ))}

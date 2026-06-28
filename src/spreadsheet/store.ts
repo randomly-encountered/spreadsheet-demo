@@ -2,6 +2,7 @@ import type { Expression } from '#/formula/ast.types'
 import { collectReferencedCellIds, evaluate } from '#/formula/evaluator'
 import { parse } from '#/formula/parser'
 import { tokenize } from '#/formula/tokenizer'
+import { FORMULA_PREFIX, isFormula } from '#/spreadsheet/cell.helpers'
 import { CellError } from '#/spreadsheet/cell.error'
 import { createDependencyGraph } from '#/spreadsheet/graph'
 import { assertEvaluationError, throwFormulaError } from '#/spreadsheet/store.errors'
@@ -12,7 +13,6 @@ import { createStore } from 'zustand/vanilla'
 const DEFAULT_COLUMN_COUNT = 10
 const DEFAULT_ROW_COUNT = 10
 const EMPTY_CELL: Readonly<Cell> = Object.freeze({ raw: '', value: null })
-const FORMULA_PREFIX = '='
 
 export type SpreadsheetStoreOptions = {
   columns?: number
@@ -22,6 +22,7 @@ export type SpreadsheetStoreOptions = {
 
 export type SpreadsheetState = {
   getCell: (cellId: CellId) => Readonly<Cell>
+  getDependencyLocusFor: (cellId: CellId) => ReadonlySet<CellId>
   selectCell: (cellId: CellId) => void
   setCell: (cellId: CellId, raw: string) => string
   cells: ReadonlyMap<CellId, Cell>
@@ -130,7 +131,7 @@ export function createSpreadsheetStore({
     function setCell(cellId: CellId, rawInput: string): string {
       const canonicalCellId = getCellId(cellId, columns, rows)
 
-      if (rawInput.startsWith(FORMULA_PREFIX)) {
+      if (isFormula(rawInput)) {
         applyFormulaInput(canonicalCellId, rawInput)
         return rawInput
       }
@@ -140,6 +141,8 @@ export function createSpreadsheetStore({
 
     return {
       getCell: cellId => get().cells.get(getCellId(cellId, columns, rows)) ?? EMPTY_CELL,
+      getDependencyLocusFor: cellId =>
+        dependencyGraph.getDependencyLocusFor(getCellId(cellId, columns, rows)),
       selectCell: cellId => set({ selectedCellId: getCellId(cellId, columns, rows) }),
       cells: new Map(),
       selectedCellId: null,

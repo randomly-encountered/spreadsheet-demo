@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 import { COLUMN_COUNT, ROW_COUNT } from '#/components/Spreadsheet/constants'
 import { FormulaBar } from '#/components/Spreadsheet/FormulaBar'
@@ -9,6 +9,7 @@ import { SpreadsheetProvider } from '#/components/Spreadsheet/SpreadsheetProvide
 export function Spreadsheet() {
   const formulaInputRef = useRef<HTMLInputElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
+  const [isEditing, setIsEditing] = useState(false)
 
   function focusFormulaInput(): void {
     formulaInputRef.current?.focus()
@@ -22,8 +23,12 @@ export function Spreadsheet() {
   return (
     <SpreadsheetProvider columns={COLUMN_COUNT} rows={ROW_COUNT}>
       <div className={styles.container}>
-        <FormulaBar ref={formulaInputRef} onConfirm={focusGrid} />
-        <Grid ref={gridRef} onEditCell={focusFormulaInput} />
+        <FormulaBar
+          ref={formulaInputRef}
+          onConfirm={focusGrid}
+          onEditingChange={setIsEditing}
+        />
+        <Grid isEditing={isEditing} ref={gridRef} onEditCell={focusFormulaInput} />
       </div>
     </SpreadsheetProvider>
   )

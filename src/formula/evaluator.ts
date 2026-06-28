@@ -4,6 +4,7 @@ import {
   isFiniteResult,
   getNormalizedCellId,
   iterateRange,
+  readRangeCellValue,
   readReferencedCellValue,
 } from '#/formula/evaluator.helpers'
 import type { CellValueLookup } from '#/formula/evaluator.types'
@@ -11,7 +12,7 @@ import { getFormulaFunction } from '#/formula/functions'
 
 export { EvaluationError } from '#/formula/evaluator.error'
 
-const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number => {
+const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number | null => {
   switch (expression.type) {
     case 'numberLiteral':
       return expression.value
@@ -21,11 +22,13 @@ const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number
       throw new EvaluationError('range-not-allowed', 'A range must be a function argument')
     case 'unaryExpression': {
       const operand = evaluateScalar(expression.operand, lookup)
+      if (operand === null) return null
       return expression.operator === '-' ? -operand : operand
     }
     case 'binaryExpression': {
       const left = evaluateScalar(expression.left, lookup)
       const right = evaluateScalar(expression.right, lookup)
+      if (left === null || right === null) return null
 
       switch (expression.operator) {
         case '+':
@@ -67,7 +70,9 @@ const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number
 
       for (const argument of expression.arguments) {
         if (argument.type !== 'rangeReference') {
-          values.push(evaluateScalar(argument, lookup))
+          const value = evaluateScalar(argument, lookup)
+          if (value === null) return null
+          values.push(value)
           continue
         }
 
@@ -79,18 +84,22 @@ const evaluateScalar = (expression: Expression, lookup: CellValueLookup): number
         }
 
         for (const reference of iterateRange(argument)) {
-          values.push(readReferencedCellValue(reference, lookup))
+          const value = readRangeCellValue(reference, lookup)
+          if (value !== null) values.push(value)
         }
       }
 
+      if (values.length === 0) return null
       return isFiniteResult(definition.evaluate(values))
     }
   }
 }
 
 /** Evaluates a parsed formula using numeric values supplied by the spreadsheet layer. */
-export const evaluate = (expression: Expression, lookup: CellValueLookup): number =>
-  isFiniteResult(evaluateScalar(expression, lookup))
+export const evaluate = (expression: Expression, lookup: CellValueLookup): number | null => {
+  const value = evaluateScalar(expression, lookup)
+  return value === null ? null : isFiniteResult(value)
+}
 
 /** Returns normalized cell references, expanding ranges and removing duplicates. */
 export const collectReferencedCellIds = (expression: Expression): Set<string> => {

@@ -98,6 +98,22 @@ export function readReferencedCellValue(reference: string, lookup: CellValueLook
   const cellId = getNormalizedCellId(reference)
   const value = lookup(cellId)
 
+  if (value === null) return 0
+
+  if (value === undefined || !Number.isFinite(value)) {
+    throw new EvaluationError('reference', `Cell ${cellId} has no numeric value`)
+  }
+
+  return value
+}
+
+/** Preserves blanks so aggregate ranges can omit them without hiding invalid values. */
+export function readRangeCellValue(reference: string, lookup: CellValueLookup): number | null {
+  const cellId = getNormalizedCellId(reference)
+  const value = lookup(cellId)
+
+  if (value === null) return null
+
   if (value === undefined || !Number.isFinite(value)) {
     throw new EvaluationError('reference', `Cell ${cellId} has no numeric value`)
   }

@@ -9,7 +9,7 @@ import { tokenize } from '#/formula/tokenizer'
 export const parseFormula = (source: string): Expression => parse(tokenize(source))
 
 export const createCellValueLookup
-  = (values: Readonly<Record<string, number>>): CellValueLookup =>
+  = (values: Readonly<Record<string, number | null>>): CellValueLookup =>
     cellId =>
       values[cellId]
 

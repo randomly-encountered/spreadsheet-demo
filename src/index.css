@@ -15,7 +15,7 @@
   --color-canvas: #f3f5f7;
   --color-surface: #ffffff;
   --color-cell: #ffffff;
-  --color-cell-selected: #f0f6ff;
+  --color-cell-selected: #e0edff;
   --color-text: #344054;
   --color-text-strong: #101828;
   --color-text-muted: #667085;
@@ -32,28 +32,28 @@
   --grid-gap-size: 1px;
   --cell-min-inline-size: 80px;
   --cell-max-inline-size: 120px;
-  --cell-block-size: 44px;
+  --cell-block-size: 48px;
   --cell-padding-inline: 12px;
   --row-header-inline-size: 42px;
-  --column-header-block-size: 34px;
-  --control-block-size: 46px;
+  --column-header-block-size: 32px;
+  --control-block-size: 48px;
   --spreadsheet-min-inline-size: calc(
-    var(--row-header-inline-size) + (10 * var(--cell-min-inline-size)) +
+    var(--row-header-inline-size) + (8 * var(--cell-min-inline-size)) +
       (12 * var(--grid-gap-size))
   );
   --spreadsheet-max-inline-size: calc(
-    var(--row-header-inline-size) + (10 * var(--cell-max-inline-size)) +
+    var(--row-header-inline-size) + (8 * var(--cell-max-inline-size)) +
       (12 * var(--grid-gap-size))
   );
 
   --space-compact: 4px;
-  --space-small: 10px;
-  --space-medium: 18px;
+  --space-small: 8px;
+  --space-medium: 16px;
   --space-page: clamp(16px, 4vw, 48px);
   --font-size-small: 0.75rem;
   --font-size-title: clamp(1.5rem, 3vw, 2.125rem);
-  --shadow-formula-bar: 0 1px 3px rgb(16 24 40 / 8%);
-  --shadow-workspace: 0 18px 50px rgb(16 24 40 / 10%);
+  --shadow-formula-bar: 0 1px 4px rgb(16 24 40 / 8%);
+  --shadow-workspace: 0 16px 48px rgb(16 24 40 / 10%);
 }
 
 * {

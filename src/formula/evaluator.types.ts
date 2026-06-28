@@ -7,4 +7,4 @@ export type EvaluationErrorType
     | 'reference'
     | 'unsupported-function'
 
-export type CellValueLookup = (cellId: string) => number | undefined
+export type CellValueLookup = (cellId: string) => number | null | undefined

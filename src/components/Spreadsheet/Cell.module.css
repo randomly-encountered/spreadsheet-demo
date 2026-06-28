@@ -10,6 +10,7 @@
   min-inline-size: 0;
   overflow: hidden;
   padding-inline: var(--cell-padding-inline);
+  position: relative;
 }
 
 .value {
@@ -21,8 +22,30 @@
 
 .cell[aria-selected='true'] {
   background: var(--color-cell-selected);
+  box-shadow: var(--shadow-formula-bar);
+  z-index: 2000;
 }
 
 .cell[data-derived='true'] {
   color: var(--color-accent);
+}
+
+.cell[data-derived='true']::after {
+  background: var(--color-accent);
+  block-size: 0.3125rem;
+  border-radius: 50%;
+  content: '';
+  inline-size: 0.3125rem;
+  inset-block-start: var(--space-compact);
+  inset-inline-end: var(--space-compact);
+  position: absolute;
+}
+
+.cell[aria-invalid='true'] {
+  background: var(--color-error-surface);
+  color: var(--color-error);
+}
+
+.cell[aria-invalid='true']::after {
+  background: var(--color-error);
 }

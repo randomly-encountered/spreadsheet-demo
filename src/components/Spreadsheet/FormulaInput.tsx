@@ -21,6 +21,9 @@ export function FormulaInput({ cellId, ref, onConfirm }: FormulaInputProps) {
   const rawValue = useSpreadsheetStore(state =>
     cellId ? (state.cells.get(cellId)?.raw ?? '') : '',
   )
+  const cellError = useSpreadsheetStore(state =>
+    cellId ? state.cells.get(cellId)?.error?.message : undefined,
+  )
 
   const errorId = useId()
   const [error, setError] = useState<string | null>(null)
@@ -28,6 +31,7 @@ export function FormulaInput({ cellId, ref, onConfirm }: FormulaInputProps) {
 
   const displayValue = pendingEdit.cellId === cellId ? pendingEdit.value : rawValue
   const hasPendingChange = displayValue !== rawValue
+  const visibleError = error ?? (hasPendingChange ? undefined : cellError)
 
   /*
    * Updates cell state on a valid value change submission. Captures any error to surface to
@@ -90,11 +94,11 @@ export function FormulaInput({ cellId, ref, onConfirm }: FormulaInputProps) {
   }
 
   return (
-    <>
-      <div className={styles.inputContainer}>
+    <div className={styles.inputContainer}>
+      <div className={styles.inputContent}>
         <input
-          aria-describedby={error ? errorId : undefined}
-          aria-invalid={error ? true : undefined}
+          aria-describedby={visibleError ? errorId : undefined}
+          aria-invalid={visibleError ? true : undefined}
           aria-label={cellId ? `Raw value for ${cellId}` : 'Select a cell to edit'}
           className={styles.input}
           disabled={cellId === null}
@@ -104,52 +108,48 @@ export function FormulaInput({ cellId, ref, onConfirm }: FormulaInputProps) {
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />
-        {cellId && (
-          <div className={styles.inputActions}>
-            {displayValue.length > 0 && (
-              <button
-                aria-label={`Clear input for ${cellId}`}
-                className={styles.inputAction}
-                type="button"
-                onClick={handleClear}
-              >
-                <Icon aria-hidden="true" className={styles.actionIcon} icon="mdi:eraser" />
-                <span>Clear</span>
-              </button>
-            )}
-            <button
-              aria-label={`Cancel edit for ${cellId}`}
-              className={styles.inputAction}
-              type="button"
-              onClick={handleCancel}
-            >
-              <Icon aria-hidden="true" className={styles.actionIcon} icon="mdi:keyboard-esc" />
-              <span>Cancel</span>
-            </button>
-            {hasPendingChange && (
-              <button
-                aria-label={`Confirm edit for ${cellId}`}
-                className={`${styles.inputAction} ${styles.confirmAction}`}
-                disabled={Boolean(error)}
-                type="button"
-                onClick={handleConfirm}
-              >
-                <Icon
-                  aria-hidden="true"
-                  className={styles.actionIcon}
-                  icon="mdi:keyboard-return"
-                />
-                <span>Confirm</span>
-              </button>
-            )}
+        {visibleError && (
+          <div className={styles.errorTag} id={errorId} role="alert" title={visibleError}>
+            {visibleError}
           </div>
         )}
       </div>
-      {error && (
-        <div className={styles.errorBanner} id={errorId} role="alert">
-          {error}
+      {cellId && (
+        <div className={styles.inputActions}>
+          {displayValue.length > 0 && (
+            <button
+              aria-label={`Clear input for ${cellId}`}
+              className={styles.inputAction}
+              type="button"
+              onClick={handleClear}
+            >
+              <Icon aria-hidden="true" className={styles.actionIcon} icon="mdi:eraser" />
+              <span>Clear</span>
+            </button>
+          )}
+          <button
+            aria-label={`Cancel edit for ${cellId}`}
+            className={styles.inputAction}
+            type="button"
+            onClick={handleCancel}
+          >
+            <Icon aria-hidden="true" className={styles.actionIcon} icon="mdi:keyboard-esc" />
+            <span>Cancel</span>
+          </button>
+          {hasPendingChange && (
+            <button
+              aria-label={`Confirm edit for ${cellId}`}
+              className={`${styles.inputAction} ${styles.confirmAction}`}
+              disabled={Boolean(error)}
+              type="button"
+              onClick={handleConfirm}
+            >
+              <Icon aria-hidden="true" className={styles.actionIcon} icon="mdi:keyboard-return" />
+              <span>Confirm</span>
+            </button>
+          )}
         </div>
       )}
-    </>
+    </div>
   )
 }

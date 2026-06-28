@@ -15,11 +15,6 @@
   justify-content: center;
 }
 
-.container:has([role='alert']) .coordinate,
-.container:has([role='alert']) .symbol {
-  grid-row: 1 / span 2;
-}
-
 .coordinate {
   color: var(--color-text-strong);
   font-size: var(--font-size-small);

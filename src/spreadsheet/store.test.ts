@@ -80,6 +80,31 @@ describe('SpreadsheetStore', () => {
     expect(spreadsheet.getCell('B1')).toEqual({ raw: '=SUM(A1:A3)', value: 10 })
   })
 
+  it('skips blank range values and waits to derive from an all-blank range', () => {
+    const spreadsheet = createSpreadsheet()
+
+    spreadsheet.setCell('A1', '2')
+    spreadsheet.setCell('C1', '=PRODUCT(A1:A3)')
+    spreadsheet.setCell('C2', '=SUM(B1:B3)')
+
+    expect(spreadsheet.getCell('C1')).toEqual({ raw: '=PRODUCT(A1:A3)', value: 2 })
+    expect(spreadsheet.getCell('C2')).toEqual({ raw: '=SUM(B1:B3)', value: null })
+
+    spreadsheet.setCell('B2', '4')
+
+    expect(spreadsheet.getCell('C2')).toEqual({ raw: '=SUM(B1:B3)', value: 4 })
+  })
+
+  it('includes explicit zero values in product ranges', () => {
+    const spreadsheet = createSpreadsheet()
+
+    spreadsheet.setCell('A1', '2')
+    spreadsheet.setCell('A2', '0')
+    spreadsheet.setCell('B1', '=PRODUCT(A1:A3)')
+
+    expect(spreadsheet.getCell('B1')).toEqual({ raw: '=PRODUCT(A1:A3)', value: 0 })
+  })
+
   it('recalculates direct and transitive dependents', () => {
     const spreadsheet = createSpreadsheet()
 

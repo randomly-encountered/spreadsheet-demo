@@ -39,7 +39,7 @@ export function createSpreadsheetStore({
     function lookupNumericCellValue(
       cellMap: ReadonlyMap<CellId, Cell>,
       reference: string,
-    ): number | undefined {
+    ): number | null | undefined {
       try {
         return getCellNumericValue(cellMap, getCellId(reference, columns, rows))
       }
@@ -106,7 +106,7 @@ export function createSpreadsheetStore({
 
     function applyFormulaInput(cellId: CellId, rawInput: string): void {
       let expression: Expression
-      let value: number
+      let value: number | null
 
       try {
         // Extract the raw formula string without the canonical prefix

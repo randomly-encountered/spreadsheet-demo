@@ -30,15 +30,16 @@ export function getCellId(cellId: CellId, columnCount: number, rowCount: number)
 export function getCellNumericValue(
   cellsById: ReadonlyMap<CellId, Cell>,
   cellId: CellId,
-): number | undefined {
+): number | null | undefined {
   const referencedCell = cellsById.get(cellId)
 
-  if (!referencedCell) return 0
+  if (!referencedCell) return null
 
   const rawValue = referencedCell.raw.trim()
-  if (rawValue === '') return 0
+  if (rawValue === '') return null
   if (referencedCell.error) return undefined
   if (typeof referencedCell.value === 'number') return referencedCell.value
+  if (referencedCell.value === null) return null
 
   const numericValue = Number(rawValue)
   return Number.isFinite(numericValue) ? numericValue : undefined

@@ -12,6 +12,11 @@ export function Cell({ cellId, onSelect }: CellProps) {
   const cell = useSpreadsheetStore(state => state.cells.get(cellId))
   const value = cell?.value ?? ''
   const isDerived = cell?.raw.startsWith('=') ?? false
+  const error = cell?.error
+  const valueLabel = value === '' ? 'empty' : value
+  const ariaLabel = error
+    ? `${cellId}, error: ${error.message}`
+    : `${cellId}, ${valueLabel}`
 
   function handlePointerDown(): void {
     onSelect(cellId)
@@ -19,7 +24,8 @@ export function Cell({ cellId, onSelect }: CellProps) {
 
   return (
     <div
-      aria-label={`${cellId}${value === '' ? ', empty' : `, ${value}`}`}
+      aria-invalid={error ? true : undefined}
+      aria-label={ariaLabel}
       aria-selected={isSelected}
       className={styles.cell}
       data-derived={isDerived ? true : undefined}

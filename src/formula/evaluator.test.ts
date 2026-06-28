@@ -39,6 +39,25 @@ describe('evaluate', () => {
     expect(evaluate(parseFormula('AVERAGE(A1:A2, B1)'), lookup)).toBeCloseTo(10 / 3)
   })
 
+  it('skips blank range values and leaves all-blank aggregate results empty', () => {
+    const lookupWithBlanks = createCellValueLookup({ A1: 2, A2: null, A3: 3, B1: null, B2: null })
+
+    expect(evaluate(parseFormula('PRODUCT(A1:A3)'), lookupWithBlanks)).toBe(6)
+    expect(evaluate(parseFormula('SUM(A2:B2)'), lookupWithBlanks)).toBeNull()
+  })
+
+  it('preserves explicit zero values in aggregate ranges', () => {
+    const lookupWithZero = createCellValueLookup({ A1: 2, A2: 0, A3: null })
+
+    expect(evaluate(parseFormula('PRODUCT(A1:A3)'), lookupWithZero)).toBe(0)
+  })
+
+  it('propagates an all-blank aggregate through its containing expression', () => {
+    const blankLookup = createCellValueLookup({ A1: null, A2: null })
+
+    expect(evaluate(parseFormula('SUM(A1:A2) + 5'), blankLookup)).toBeNull()
+  })
+
   it('expands ranges across multi-letter column boundaries', () => {
     const boundaryLookup = createCellValueLookup({ AA1: 2, AA2: 4, Z1: 1, Z2: 3 })
     expect(evaluate(parseFormula('SUM(Z1:AA2)'), boundaryLookup)).toBe(10)
